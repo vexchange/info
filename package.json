@@ -9,11 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.4.0",
+    "@emotion/styled": "^11.3.0",
+    "@vechain/connex-driver": "^2.0.5",
+    "@vechain/connex-framework": "^2.0.5",
+    "big.js": "^6.1.1",
+    "ethereum-block-by-date": "^1.4.0",
+    "ethers": "^5.4.1",
+    "moment": "^2.29.1",
     "next": "11.0.1",
     "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "react-dom": "17.0.2",
+    "thorify": "^1.5.5",
+    "vexchange-sdk": "^1.0.3",
+    "web3": "^1.4.0"
   },
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.3.0",
     "eslint": "7.31.0",
     "eslint-config-next": "11.0.1"
   }
