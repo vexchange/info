@@ -16,7 +16,7 @@ const handler = async (req, res) => {
 
   const volume = await getVolume(driver, web3, token)
   const reserves = await getReserves(driver, token)
-	const price = await getPrice(driver, "0x0000000000000000000000000000456E65726779", "0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997")
+	const price = await getPrice(driver, token, "0xd8ccdd85abdbf68dfec95f06c973e87b1b5a9997")
 
   res.status(200).json({ volume, reserves, price });
 };
