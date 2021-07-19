@@ -1,62 +1,66 @@
-import { css, Global, keyframes } from '@emotion/react'
+import { css, Global } from '@emotion/react'
 import styled from '@emotion/styled'
 
 export const globalStyles = (
   <Global
     styles={css`
+      * {
+        box-sizing: border-box;
+      }
+
       html,
       body {
+        margin: 0;
+        padding: 0;
 				height: 100%;
+      }
+
+      body {
+        min-height: 100vh;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        border: 1px solid #ccc;
+        text-align: right;
+        padding: 4px;
       }
     `}
   />
 )
 
-export const basicStyles = css`
-  background-color: white;
-  color: cornflowerblue;
-  border: 1px solid lightgreen;
-  border-right: none;
-  border-bottom: none;
-  box-shadow: 5px 5px 0 0 lightgreen, 10px 10px 0 0 lightyellow;
-  transition: all 0.1s linear;
-  margin: 3rem 0;
-  padding: 1rem 0.5rem;
+export const PageWrapper = styled.div`
+  width: 90%;
 `
 
-export const hoverStyles = css`
-  &:hover {
-    color: white;
-    background-color: lightgray;
-    border-color: aqua;
-    box-shadow: -15px -15px 0 0 aqua, -30px -30px 0 0 cornflowerblue;
-  }
-`
-export const bounce = keyframes`
-  from {
-    transform: scale(1.01);
-  }
-  to {
-    transform: scale(0.99);
-  }
+export const ThemedBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  max-width: 100vw !important;
+  height: 200vh;
+  mix-blend-mode: color;
+  background: ${({ backgroundColor }) =>
+    `radial-gradient(50% 50% at 50% 50%, ${backgroundColor} 0%, rgba(255, 255, 255, 0) 100%)`};
+  transform: translateY(-176vh);
 `
 
-export const Basic = styled.div`
-  ${basicStyles};
-`
-
-export const Combined = styled.div`
-  ${basicStyles};
-  ${hoverStyles};
-  & code {
-    background-color: linen;
-  }
-`
-export const Animated = styled.div`
-  ${basicStyles};
-  ${hoverStyles};
-  & code {
-    background-color: linen;
-  }
-  animation: ${({ animation }) => animation} 0.2s infinite ease-in-out alternate;
+export const ThemedBackgroundGlobal = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  max-width: 100vw !important;
+  height: 200vh;
+  mix-blend-mode: color;
+  background: ${({ backgroundColor }) =>
+    `radial-gradient(50% 50% at 50% 50%, ${backgroundColor} 0%, rgba(255, 255, 255, 0) 100%)`};
+  transform: translateY(-150vh);
 `

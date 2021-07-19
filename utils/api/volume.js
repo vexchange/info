@@ -1,6 +1,5 @@
 import { WVET, Fetcher } from 'vexchange-sdk';
 import { Big } from 'big.js';
-import { Framework } from '@vechain/connex-framework';
 import * as EthDater from 'ethereum-block-by-date';
 import moment from 'moment';
 import Pair from '../abis/IVexchangeV2Pair.json';
@@ -16,8 +15,7 @@ const getETHPosition = pair => {
   }
 };
 
-const getVolume = async(driver, web3, address) => {
-	const connex = new Framework(driver);
+const getVolume = async(connex, web3, address) => {
 	const dater = new EthDater(web3);
 
 	const from = moment().subtract(1, 'days').format()
@@ -47,7 +45,7 @@ const getVolume = async(driver, web3, address) => {
 		return prev.plus(currValue);
 	}, Big("0"));
 
-	return weiToEth(total).toString();
+	return parseFloat(weiToEth(total)).toFixed(2)
 };
 
 export default getVolume;

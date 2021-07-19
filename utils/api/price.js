@@ -1,16 +1,13 @@
 import { Token, Fetcher, Route } from 'vexchange-sdk'
-import { Framework } from '@vechain/connex-framework';
 
 const getMidPrice = async(
-	driver,
+	connex,
 	baseToken,
 	quoteToken,
 	baseDecimal = 18,
 	quoteDecimal = 18,
 	chainId = 1,
 ) => {
-	const connex = new Framework(driver);
-
 	if (chainId == undefined) {
 		chainId = ChainId.MAINNET
 	}
@@ -22,7 +19,10 @@ const getMidPrice = async(
 	let base2quote = await route.midPrice.toSignificant(6);
 	let quote2base = await route.midPrice.invert().toSignificant(6);
 
-	return { base2quote, quote2base }
+	return {
+		base2quote: parseFloat(base2quote),
+		quote2base: parseFloat(quote2base),
+	}
 
 }
 
