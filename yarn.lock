@@ -5384,8 +5384,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-"vexchange-sdk@file:.yalc/vexchange-sdk":
-  version "1.0.2"
+vexchange-sdk@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/vexchange-sdk/-/vexchange-sdk-1.0.3.tgz#c05849357d7f992504bf4d063778c9567d1faa50"
+  integrity sha512-EprA2sH4KKB1mwa/QDCfymkUlK3xpp8+mfYChF57Rb4hXh13TAV2CGEPbK48EMas/J6vJ0VHkSVdKykaVZMuOA==
   dependencies:
     "@ethersproject/address" "^5.0.0-beta.134"
     "@ethersproject/contracts" "^5.0.0-beta.143"
