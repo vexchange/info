@@ -15,7 +15,7 @@ const tokens = [
     name: 'OceanEx'
   },
   {
-    address: '0x67fD63f6068962937EC81AB3Ae3bF9871E524FC9',
+    address: '0x46209d5e5a49c1d403f4ee3a0a88c3a27e29e58d',
     symbol: 'JUR',
     name: 'Jur'
   },
