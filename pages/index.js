@@ -15,11 +15,6 @@ const tokens = [
     name: 'OceanEx'
   },
   {
-    address: '0x46209d5e5a49c1d403f4ee3a0a88c3a27e29e58d',
-    symbol: 'JUR',
-    name: 'Jur'
-  },
-  {
     address: '0x67fd63f6068962937ec81ab3ae3bf9871e524fc9',
     symbol: 'VEED',
     name: 'VIMworld'
@@ -38,6 +33,11 @@ const tokens = [
     address: '0xf8e1faa0367298b55f57ed17f7a2ff3f5f1d1628',
     symbol: 'EHrT',
     name: 'Eight Hours Token'
+  },
+  {
+    address: '0x46209d5e5a49c1d403f4ee3a0a88c3a27e29e58d',
+    symbol: 'JUR',
+    name: 'Jur'
   },
   {
     address: '0x1b8ec6c2a45cca481da6f243df0d7a5744afc1f8',
