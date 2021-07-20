@@ -15,8 +15,16 @@ export const globalStyles = (
 				height: 100%;
       }
 
+      html {
+        color: rgb(255, 255, 255);
+        background: rgb(31, 33, 40) url("/bg.png") no-repeat;
+        background-position: center right;
+        background-attachment: fixed;
+      }
+
       body {
         min-height: 100vh;
+        font-family: 'Inter', sans-serif;
       }
 
       table {

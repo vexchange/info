@@ -1,77 +1,153 @@
-import React, { useEffect, useState, Fragment } from 'react'
+import React, {
+	useEffect,
+	useState,
+	useMemo,
+	useCallback,
+	Fragment,
+} from 'react'
 import styled from '@emotion/styled'
-import { times } from 'lodash'
-import axios from 'axios'
 
+import Card from '../Card'
 import { AutoColumn } from '../Column'
-import { Label, ClickableText } from '../Text'
+import CurrencyLogo from '../CurrencyLogo'
+import { Label } from '../Text'
+import { format, formatCurrency } from '../../utils'
 
 const ResponsiveGrid = styled.div`
   display: grid;
   grid-gap: 1em;
   align-items: center;
-  grid-template-columns: 20px 3fr repeat(4, 1fr);
+  grid-template-columns: 20px 3fr repeat(3, 1fr);
+
   @media screen and (max-width: 900px) {
     grid-template-columns: 20px 1.5fr repeat(3, 1fr);
-    & :nth-child(4) {
-      display: none;
-    }
   }
+
   @media screen and (max-width: 800px) {
     grid-template-columns: 20px 1.5fr repeat(2, 1fr);
-    & :nth-child(6) {
-      display: none;
-    }
   }
+
   @media screen and (max-width: 670px) {
     grid-template-columns: repeat(2, 1fr);
-    > *:first-child {
-      display: none;
-    }
-    > *:nth-child(3) {
-      display: none;
-    }
   }
 `
 
-const format = (num = 0) => new Intl.NumberFormat().format(num)
+const Break = styled.div`
+  height: 1px;
+  width: 100%;
+`
 
-const DataRow = ({ token }) => {
-	const [tokenData, setTokenData] = useState(null);
+const Wrapper = styled(Card)`
+	margin-bottom: 200px;
+`
 
-	useEffect(() => {
-		axios.get(`/api/${token.address}`).then(({ data }) => {
-			setTokenData(prevState => ({ ...data, ...prevState }))
-		})
-	}, [ token ])
+const Ticker = styled.span`
+	box-sizing: border-box;
+	margin: 0px 0px 0px 8px;
+	min-width: 0px;
+	font-weight: 500;
+	color: rgb(108, 114, 132);
+`
 
+// const ResponsiveLogo = styled(CurrencyLogo)`
+//   @media screen and (max-width: 670px) {
+//     width: 16px;
+//     height: 16px;
+//   }
+// `
+
+const DataRow = ({ token, price, index }) => {
 	return (
-		<tr>
-			<td>{ token.name } ({ token.symbol })</td>
-			<td>{ tokenData?.price?.quote2base }</td>
-			<td>{ tokenData?.volume ?? 0 }</td>
-			<td>{ format(tokenData?.reserves) }</td>
-		</tr>
+		<ResponsiveGrid>
+			<Label>{index + 1}</Label>
+			<Label>
+				{/* <ResponsiveLogo address={token.address} /> */}
+				{ token.name } <Ticker>({ token.symbol })</Ticker>
+			</Label>
+			<Label end={1}>
+				{ format((token?.price?.base2quote ?? 0) * price) }
+			</Label>
+			<Label end={1}>
+				{ formatCurrency((token?.volume ?? 0) * price) }
+			</Label>
+			<Label end={1}>
+				{ formatCurrency(token?.reserves * price) }
+			</Label>
+		</ResponsiveGrid>
 	)
 };
 
-const TokenTable = ({ tokens }) => {
+const SORT_FIELD = {
+  name: 'name',
+  volume: 'volume',
+  reserves: 'reserves',
+  price: 'price',
+}
+
+const MAX_ITEMS = 10
+
+const TokenTable = ({ tokens, price, maxItems = MAX_ITEMS }) => {
+	const [page, setPage] = useState(1)
+	const [sortField, setSortField] = useState(SORT_FIELD.reserves)
+	const [sortDirection, setSortDirection] = useState(true)
+
+	const sortedTokens = useMemo(() => {
+    return tokens
+      ? tokens
+          .filter((x) => !!x)
+          .sort((a, b) => {
+            if (a && b) {
+              return a[sortField] > b[sortField]
+                ? (sortDirection ? -1 : 1) * 1
+                : (sortDirection ? -1 : 1) * -1
+            } else {
+              return -1
+            }
+          })
+          .slice(maxItems * (page - 1), page * maxItems)
+      : []
+  }, [tokens, maxItems, page, sortDirection, sortField])
+
+	useEffect(() => {
+    let extraPages = 1
+    if (tokens) {
+      if (tokens.length % maxItems === 0) {
+        extraPages = 0
+      }
+    }
+  }, [maxItems, tokens])
+
+	const handleSort = useCallback(newField => {
+		setSortField(newField)
+		setSortDirection(sortField !== newField ? true : !sortDirection)
+	}, [sortDirection, sortField])
+
 	return (
-		<table>
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Price (VET)</th>
-					<th>Volume (VET)</th>
-					<th>TVL (USD)</th>
-				</tr>
-			</thead>
-			<tbody>
-				{ tokens.map(token => (
-					<DataRow key={token.address} token={token} />
-				))}
-			</tbody>
-		</table>
+		<Wrapper>
+			<AutoColumn gap="16px">
+
+				<ResponsiveGrid>
+					<Label>#</Label>
+					<Label onClick={() => handleSort(SORT_FIELD.name)}>Name</Label>
+					<Label end={1} onClick={() => handleSort(SORT_FIELD.price)}>Price</Label>
+					<Label end={1} onClick={() => handleSort(SORT_FIELD.volume)}>Volume</Label>
+					<Label end={1} onClick={() => handleSort(SORT_FIELD.reserves)}>TVL</Label>
+				</ResponsiveGrid>
+
+				<Break />
+				{ sortedTokens.map((token, index) => {
+					if (token) {
+						return (
+							<Fragment key={token.address}>
+								<DataRow token={token} price={price} index={index} />
+								<Break />
+							</Fragment>
+						)
+					}
+				})}
+			</AutoColumn>
+		</Wrapper>
+		
 	)
 }
 

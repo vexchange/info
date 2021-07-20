@@ -45,7 +45,7 @@ const getVolume = async(connex, web3, address) => {
 		return prev.plus(currValue);
 	}, Big("0"));
 
-	return parseFloat(weiToEth(total)).toFixed(2)
+	return parseFloat(weiToEth(total))
 };
 
 export default getVolume;
