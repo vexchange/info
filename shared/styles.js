@@ -18,7 +18,7 @@ export const globalStyles = (
       html {
         color: rgb(255, 255, 255);
         background: rgb(31, 33, 40) url("/bg.png") no-repeat;
-        background-position: center right;
+        background-position: bottom right;
         background-attachment: fixed;
       }
 
