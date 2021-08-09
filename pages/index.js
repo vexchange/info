@@ -63,7 +63,7 @@ export default function Home() {
 	useEffect(() => {
     const getData = () => {
       const promises = allTokens.map(async (item) => {
-        const { data } = await axios.get(`/api/token/${item.address}`)
+        const { data } = await axios.get(`/api/${item.address}`)
         item = { ...data, ...item }
 
         return item
