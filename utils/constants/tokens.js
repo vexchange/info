@@ -39,4 +39,9 @@ export const allTokens = [
     symbol: 'DBET',
     name: 'Decent.bet'
   },
+  {
+    address: '0xb0821559723db89e0bd14fee81e13a3aae007e65',
+    symbol: 'VPU',
+    name: 'VPunks Token'
+  },
 ]
