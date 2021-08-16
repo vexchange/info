@@ -113,7 +113,7 @@ export default function Home() {
               top: '50%',
               left: '50%',
               marginTop: -91.5,
-              marginLeft: -50,
+              marginLeft: -100,
               animationName: bounce,
               animationDuration: '1s',
             }}>
