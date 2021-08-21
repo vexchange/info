@@ -11,6 +11,7 @@ import { keyframes } from '@emotion/react'
 import { formatCurrency } from '../utils'
 import { allTokens } from '../utils/constants/tokens'
 import { PageWrapper } from '../shared/styles'
+import Header from '../components/Header'
 import TokenTable from '../components/TokenTable'
 import Card from '../components/Card'
 
@@ -37,6 +38,22 @@ const bounce = keyframes`
 
   to {
     transform: scale(1);
+  }
+`
+
+const HeaderWrapper = styled.div`
+  ${({ theme }) => theme.flexColumnNoWrap}
+  top: 0;
+  left: 0;
+  width: 100%;
+  position: fixed;
+  justify-content: space-between;
+  z-index: 2;
+`
+
+const Hide1080 = styled.div`
+  @media (max-width: 1080px) {
+    display: none;
   }
 `
 
@@ -104,6 +121,9 @@ export default function Home() {
         <meta name="description" content="Vexchange statistics" />
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"></link>
       </Head>
+      <HeaderWrapper>
+        <Header />
+      </HeaderWrapper>
       <Text mb={3}>Vexchange Overview</Text>
       { tokens.length === 0 
         ? (
