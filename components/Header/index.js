@@ -63,6 +63,7 @@ const Title = styled(Link)`
 
 const TagLine = styled.div`
   margin-left: 10px;
+  letter-spacing: 1px;
   font-family: 'Satisfy', cursive;
 `
 
