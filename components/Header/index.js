@@ -61,12 +61,6 @@ const Title = styled(Link)`
   }
 `
 
-const TagLine = styled.div`
-  margin-left: 10px;
-  letter-spacing: 1px;
-  font-family: 'Satisfy', cursive;
-`
-
 export const StyledMenuButton = styled.button`
   position: relative;
   width: 100%;
@@ -105,7 +99,6 @@ export default function Header() {
 						/>
           </div>
         </Title>
-        <TagLine>yeezy taught me</TagLine>
       </HeaderRow>
 			<HeaderControls>
         <Menu />
