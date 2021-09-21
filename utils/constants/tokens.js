@@ -44,4 +44,9 @@ export const allTokens = [
     symbol: 'VPU',
     name: 'VPunks Token'
   },
+  {
+    address: '0x170F4BA8e7ACF6510f55dB26047C83D13498AF8A',
+    symbol: "WoV",
+    name: "WorldOfV"
+  }
 ]
