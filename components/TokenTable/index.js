@@ -68,10 +68,7 @@ const DataRow = ({ token, vetPrice, index }) => {
 				{ formatPrice((token?.price?.base2quote ?? 0) * vetPrice) }
 			</Label>
 			<Label end={1}>
-				{ formatCurrency((token?.volumeInVet ?? 0) * vetPrice) }
-			</Label>
-			<Label end={1}>
-				{ formatPercentage(token?.annualizedFeeApr ?? 0) }
+				{ formatCurrency((token?.volumeInVet ?? 0) * price) }
 			</Label>
 			<Label end={1}>
 				{ formatCurrency(token?.tvlInUsd) }

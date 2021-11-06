@@ -98,7 +98,6 @@ export default function Home() {
       })
 
       Promise.all(promises).then(data => {
-        console.log(data)
         setTokens(data)
       })
 
@@ -110,7 +109,7 @@ export default function Home() {
 
         return {
           tvl: acc.tvl.plus(Big(curr.tvlInUsd)),
-          vol: acc.vol.plus(Big(curr.volume))
+          vol: acc.vol.plus(Big(curr.volumeInVet))
         }
       }, { tvl: new Big(0), vol: new Big(0)})
 
