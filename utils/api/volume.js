@@ -15,6 +15,7 @@ const getETHPosition = pair => {
   }
 };
 
+// What volume is this? 24H volume? All time volume?
 const getVolume = async(connex, web3, address) => {
 	const dater = new EthDater(web3);
 

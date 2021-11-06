@@ -78,23 +78,19 @@ export default function Home() {
 	}, [])
 
 	useEffect(() => {
-    const getData = () => {
+      if (!price) return;
       const promises = allTokens.map(async (item) => {
         const { data } = await axios.get(`/api/${item.address}`)
         item = { ...data, ...item }
-
+        item.tvlInUsd = item.reserves * item.price.base2quote * price * 2 // Multiplied by two because it's a 50-50 pool
         return item
       })
 
       Promise.all(promises).then(data => {
+        console.log(data)
         setTokens(data)
       })
-    }
-
-    if (tokens.length === 0) {
-      getData()
-    }
-	}, [tokens])
+	}, [tokens, price])
 
   useEffect(() => {
     const calculate = () => {

@@ -71,7 +71,7 @@ const DataRow = ({ token, price, index }) => {
 				{ formatCurrency((token?.volume ?? 0) * price) }
 			</Label>
 			<Label end={1}>
-				{ formatCurrency(token?.reserves * price) }
+				{ formatCurrency(token?.tvlInUsd) }
 			</Label>
 		</ResponsiveGrid>
 	)
@@ -147,7 +147,6 @@ const TokenTable = ({ tokens, price, maxItems = MAX_ITEMS }) => {
 				})}
 			</AutoColumn>
 		</Wrapper>
-		
 	)
 }
 
