@@ -78,11 +78,13 @@ export default function Home() {
 	}, [])
 
 	useEffect(() => {
-      if (!price) return;
+      if (!price || tokens.length > 0) return;
       const promises = allTokens.map(async (item) => {
         const { data } = await axios.get(`/api/${item.address}`)
         item = { ...data, ...item }
-        item.tvlInUsd = item.reserves * item.price.base2quote * price * 2 // Multiplied by two because it's a 50-50 pool
+
+        // Multiplied by two because it's a 50-50 pool
+        item.tvlInUsd = item.reserves * item.price.base2quote * price * 2;
         return item
       })
 
@@ -90,13 +92,15 @@ export default function Home() {
         console.log(data)
         setTokens(data)
       })
+
 	}, [tokens, price])
 
   useEffect(() => {
     const calculate = () => {
       const stats = tokens.reduce((acc, curr) => {
+
         return {
-          tvl: acc.tvl.plus(Big(curr.reserves)),
+          tvl: acc.tvl.plus(Big(curr.tvlInUsd)),
           vol: acc.vol.plus(Big(curr.volume))
         }
       }, { tvl: new Big(0), vol: new Big(0)})
@@ -147,7 +151,7 @@ export default function Home() {
               <Box width={1/2} px={3}>
                 <Card>
                   <Label>TVL</Label>
-                  <LargeText>{ formatCurrency((tvl * price).toFixed(2)) }</LargeText>
+                  <LargeText>{ formatCurrency( tvl ) }</LargeText>
                 </Card>
               </Box>
               <Box width={1/2} px={3}>
