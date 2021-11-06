@@ -19,7 +19,7 @@ const handler = async (req, res) => {
   const connex = new Framework(driver);
 
   const token = await Fetcher.fetchTokenData(1, address, connex);
-  const volume = await getVolume(connex, web3, address)
+  const volumeInVet = await getVolume(connex, web3, address)
   const reserves = await getReserves(connex, token)
   const price = await getPrice(connex, address, "0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997", token.decimals)
 
@@ -27,7 +27,7 @@ const handler = async (req, res) => {
     price,
     reserves,
     token,
-    volume,
+    volumeInVet,
   });
 };
 

@@ -68,7 +68,7 @@ const DataRow = ({ token, price, index }) => {
 				{ format((token?.price?.base2quote ?? 0) * price) }
 			</Label>
 			<Label end={1}>
-				{ formatCurrency((token?.volume ?? 0) * price) }
+				{ formatCurrency((token?.volumeInVet ?? 0) * price) }
 			</Label>
 			<Label end={1}>
 				{ formatCurrency(token?.tvlInUsd) }
