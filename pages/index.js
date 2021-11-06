@@ -110,7 +110,7 @@ export default function Home() {
 
         return {
           tvl: acc.tvl.plus(Big(curr.tvlInUsd)),
-          vol: acc.vol.plus(Big(curr.volumeInVet))
+          vol: acc.vol.plus(Big(curr.volume))
         }
       }, { tvl: new Big(0), vol: new Big(0)})
 
