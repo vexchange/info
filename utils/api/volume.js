@@ -13,13 +13,7 @@ const getETHPosition = pair => {
   }
 };
 
-/**
- *
- * @param connex the connex provider object
- * @param web3 the web3 provider object
- * @param address address of the pair contract
- * @returns {Promise<number>} done volume in a 24H period, denominated in VET
- */
+// What volume is this? 24H volume? All time volume?
 const getVolume = async(connex, web3, address) => {
 
 	const { number: TO_BLOCK } = connex.thor.status.head;

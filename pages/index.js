@@ -98,6 +98,7 @@ export default function Home() {
       })
 
       Promise.all(promises).then(data => {
+        console.log(data)
         setTokens(data)
       })
 
