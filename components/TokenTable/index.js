@@ -56,7 +56,7 @@ const Ticker = styled.span`
 //   }
 // `
 
-const DataRow = ({ token, price, index }) => {
+const DataRow = ({ token, vetPrice, index }) => {
 	return (
 		<ResponsiveGrid>
 			<Label>{index + 1}</Label>
@@ -65,10 +65,10 @@ const DataRow = ({ token, price, index }) => {
 				{ token.name } <Ticker>({ token.symbol })</Ticker>
 			</Label>
 			<Label end={1}>
-				{ format((token?.price?.base2quote ?? 0) * price) }
+				{ format((token?.price?.base2quote ?? 0) * vetPrice) }
 			</Label>
 			<Label end={1}>
-				{ formatCurrency((token?.volumeInVet ?? 0) * price) }
+				{ formatCurrency((token?.volumeInVet ?? 0) * vetPrice) }
 			</Label>
 			<Label end={1}>
 				{ formatCurrency(token?.tvlInUsd) }
@@ -79,16 +79,16 @@ const DataRow = ({ token, price, index }) => {
 
 const SORT_FIELD = {
   name: 'name',
-  volume: 'volume',
-  reserves: 'reserves',
-  price: 'price',
+  volumeInVet: 'volumeInVet',
+  tvlInUsd: 'tvlInUsd',
+  priceInVet: 'priceInVet',
 }
 
 const MAX_ITEMS = 10
 
-const TokenTable = ({ tokens, price, maxItems = MAX_ITEMS }) => {
+const TokenTable = ({ tokens, vetPrice, maxItems = MAX_ITEMS }) => {
 	const [page, setPage] = useState(1)
-	const [sortField, setSortField] = useState(SORT_FIELD.reserves)
+	const [sortField, setSortField] = useState(SORT_FIELD.tvlInUsd)
 	const [sortDirection, setSortDirection] = useState(true)
 
 	const sortedTokens = useMemo(() => {
@@ -129,9 +129,9 @@ const TokenTable = ({ tokens, price, maxItems = MAX_ITEMS }) => {
 				<ResponsiveGrid>
 					<Label>#</Label>
 					<Label onClick={() => handleSort(SORT_FIELD.name)}>Name</Label>
-					<Label end={1} onClick={() => handleSort(SORT_FIELD.price)}>Price</Label>
-					<Label end={1} onClick={() => handleSort(SORT_FIELD.volume)}>Volume</Label>
-					<Label end={1} onClick={() => handleSort(SORT_FIELD.reserves)}>TVL</Label>
+					<Label end={1} onClick={() => handleSort(SORT_FIELD.priceInVet)}>Price</Label>
+					<Label end={1} onClick={() => handleSort(SORT_FIELD.volumeInVet)}>Volume</Label>
+					<Label end={1} onClick={() => handleSort(SORT_FIELD.tvlInUsd)}>TVL</Label>
 				</ResponsiveGrid>
 
 				<Break />
@@ -139,7 +139,7 @@ const TokenTable = ({ tokens, price, maxItems = MAX_ITEMS }) => {
 					if (token) {
 						return (
 							<Fragment key={token.address}>
-								<DataRow token={token} price={price} index={index} />
+								<DataRow token={token} vetPrice={vetPrice} index={index} />
 								<Break />
 							</Fragment>
 						)

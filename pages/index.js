@@ -58,7 +58,7 @@ const Hide1080 = styled.div`
 `
 
 export default function Home() {
-  const [price, setPrice] = useState(0)
+  const [vetPrice, setVetPrice] = useState(0)
   const [tokens, setTokens] = useState([])
   const [tvl, setTVL] = useState(0)
   const [vol, setVol] = useState(0)
@@ -71,20 +71,24 @@ export default function Home() {
 					vs_currencies: ['usd'],
 			});
 
-			setPrice(data.vechain.usd)
+			setVetPrice(data.vechain.usd)
 		}
 
     getPrice()
 	}, [])
 
 	useEffect(() => {
-      if (!price || tokens.length > 0) return;
+      if (!vetPrice || tokens.length > 0) return;
       const promises = allTokens.map(async (item) => {
         const { data } = await axios.get(`/api/${item.address}`)
         item = { ...data, ...item }
 
         // Multiplied by two because it's a 50-50 pool
-        item.tvlInUsd = item.reserves * item.price.base2quote * price * 2;
+        item.tvlInUsd = item.reserves * item.price.base2quote * vetPrice * 2;
+
+        // Extra attribute for sorting API
+        // As sorting API cannot handle nested objects
+        item.priceInVet = item.price.base2quote;
         return item
       })
 
@@ -92,7 +96,7 @@ export default function Home() {
         setTokens(data)
       })
 
-	}, [tokens, price])
+	}, [tokens, vetPrice])
 
   useEffect(() => {
     const calculate = () => {
@@ -156,12 +160,12 @@ export default function Home() {
               <Box width={1/2} px={3}>
                 <Card>
                   <Label>Volume 24H</Label>
-                  <LargeText>{ formatCurrency((vol * price).toFixed(2)) }</LargeText>
+                  <LargeText>{ formatCurrency((vol * vetPrice).toFixed(2)) }</LargeText>
                 </Card>
               </Box>
             </Flex>
             <Text mb={3}>Top Tokens</Text>
-            <TokenTable tokens={tokens} price={price} />
+            <TokenTable tokens={tokens} vetPrice={vetPrice} />
           </>
         )}
     </PageWrapper>
