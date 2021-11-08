@@ -89,6 +89,11 @@ export default function Home() {
         // Extra attribute for sorting API
         // As sorting API cannot handle nested objects
         item.priceInVet = item.price.base2quote;
+
+        item.annualizedFeeApr = item.volumeInVet * vetPrice * 0.01 // Fee generated in a day, currently hardcoded to 1%
+                                * 365                              // Annualized
+                                / item.tvlInUsd;
+
         return item
       })
 
