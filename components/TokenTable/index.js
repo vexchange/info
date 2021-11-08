@@ -65,10 +65,13 @@ const DataRow = ({ token, vetPrice, index }) => {
 				{ token.name } <Ticker>({ token.symbol })</Ticker>
 			</Label>
 			<Label end={1}>
-				{ format((token?.price?.base2quote ?? 0) * vetPrice) }
+				{ formatPrice((token?.price?.base2quote ?? 0) * vetPrice) }
 			</Label>
 			<Label end={1}>
 				{ formatCurrency((token?.volumeInVet ?? 0) * vetPrice) }
+			</Label>
+			<Label end={1}>
+				{ formatPercentage(token?.annualizedFeeApr ?? 0) }
 			</Label>
 			<Label end={1}>
 				{ formatCurrency(token?.tvlInUsd) }
@@ -81,6 +84,7 @@ const SORT_FIELD = {
   name: 'name',
   volumeInVet: 'volumeInVet',
   tvlInUsd: 'tvlInUsd',
+  annualizedFeeApr: 'annualizedFeeApr',
   priceInVet: 'priceInVet',
 }
 
@@ -131,6 +135,7 @@ const TokenTable = ({ tokens, vetPrice, maxItems = MAX_ITEMS }) => {
 					<Label onClick={() => handleSort(SORT_FIELD.name)}>Name</Label>
 					<Label end={1} onClick={() => handleSort(SORT_FIELD.priceInVet)}>Price</Label>
 					<Label end={1} onClick={() => handleSort(SORT_FIELD.volumeInVet)}>Volume</Label>
+					<Label end={1} onClick={() => handleSort(SORT_FIELD.annualizedFeeApr)}>Swap Fee APR</Label>
 					<Label end={1} onClick={() => handleSort(SORT_FIELD.tvlInUsd)}>TVL</Label>
 				</ResponsiveGrid>
 
