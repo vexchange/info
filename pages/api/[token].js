@@ -9,8 +9,8 @@ import getVolume from '../../utils/api/volume'
 import getReserves from '../../utils/api/reserves'
 import getPrice from '../../utils/api/price'
 
-const net = new SimpleNet("http://45.32.212.120:8669/");
-const web3 = thorify(new Web3(), "http://45.32.212.120:8669/");
+const net = new SimpleNet("http://mainnet02.vechain.fi.blockorder.net");
+const web3 = thorify(new Web3(), "http://mainnet02.vechain.fi.blockorder.net");
 
 const handler = async (req, res) => {
   const address = utils.getAddress(req.query.token)
