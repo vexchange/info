@@ -49,9 +49,9 @@ export const allTokens = [
     symbol: "WoV",
     name: "WorldOfV"
   },
-  // {
-  //   address: '0x0BD802635eb9cEB3fCBe60470D2857B86841aab6',
-  //   symbol: 'VEX',
-  //   name: "Vexchange"
-  // }
+  {
+    address: '0x0BD802635eb9cEB3fCBe60470D2857B86841aab6',
+    symbol: 'VEX',
+    name: "Vexchange"
+  }
 ]

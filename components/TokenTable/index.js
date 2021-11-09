@@ -88,7 +88,7 @@ const SORT_FIELD = {
   priceInVet: 'priceInVet',
 }
 
-const MAX_ITEMS = 10
+const MAX_ITEMS = 11
 
 const TokenTable = ({ tokens, vetPrice, maxItems = MAX_ITEMS }) => {
 	const [page, setPage] = useState(1)
