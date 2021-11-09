@@ -1,21 +1,21 @@
-import { utils } from 'ethers'
-import { Pair, WVET } from 'vexchange-sdk'
-import { find } from 'lodash'
+import { WVET } from 'vexchange-sdk'
+import { Fetcher } from "vexchange-sdk";
 
-import PairABI from '../abis/IVexchangeV2Pair.json'
 
+/**
+ *
+ * @param connex the connex provider
+ * @param token1 vexchange-sdk Token
+ * @returns {Promise<number>} the token reserves of token1
+ */
 const getReserves = async (connex, token1) => {
+	// token0 is always WVET
 	const token0 = WVET[1]
-	const pairAddress = Pair.getAddress(token0, token1)
-	const getReservesABI = find(PairABI.abi, { name: 'getReserves' })
-	const getResevesMethod = connex.thor.account(pairAddress).method(getReservesABI)
+	const pair = await Fetcher.fetchPairData(token0, token1, connex)
 
-	const reserves = await getResevesMethod.call().then(data => data.decoded)
-  const { reserve0, reserve1 } = reserves
+	const token1Reserve = await pair.reserveOf(token1)
 
-	const total = parseFloat(utils.formatUnits(reserve0, 18)) + parseFloat(utils.formatUnits(reserve1, 18))
-
-	return total
+	return parseFloat(token1Reserve.toExact())
 }
 
 export default getReserves

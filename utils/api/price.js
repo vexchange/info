@@ -23,7 +23,6 @@ const getMidPrice = async(
 		base2quote: parseFloat(base2quote),
 		quote2base: parseFloat(quote2base),
 	}
-
 }
 
 export default getMidPrice;

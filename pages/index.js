@@ -58,7 +58,7 @@ const Hide1080 = styled.div`
 `
 
 export default function Home() {
-  const [price, setPrice] = useState(0)
+  const [vetPrice, setVetPrice] = useState(0)
   const [tokens, setTokens] = useState([])
   const [tvl, setTVL] = useState(0)
   const [vol, setVol] = useState(0)
@@ -71,17 +71,28 @@ export default function Home() {
 					vs_currencies: ['usd'],
 			});
 
-			setPrice(data.vechain.usd)
+			setVetPrice(data.vechain.usd)
 		}
 
     getPrice()
 	}, [])
 
 	useEffect(() => {
-    const getData = () => {
+      if (!vetPrice || tokens.length > 0) return;
       const promises = allTokens.map(async (item) => {
         const { data } = await axios.get(`/api/${item.address}`)
         item = { ...data, ...item }
+
+        // Multiplied by two because it's a 50-50 pool
+        item.tvlInUsd = item.reserves * item.price.base2quote * vetPrice * 2;
+
+        // Extra attribute for sorting API
+        // As sorting API cannot handle nested objects
+        item.priceInVet = item.price.base2quote;
+
+        item.annualizedFeeApr = item.volumeInVet * vetPrice * 0.0075 // Fee generated in a day, currently hardcoded to 0.75%
+                                * 365                                // Annualized
+                                / item.tvlInUsd;
 
         return item
       })
@@ -89,24 +100,21 @@ export default function Home() {
       Promise.all(promises).then(data => {
         setTokens(data)
       })
-    }
 
-    if (tokens.length === 0) {
-      getData()
-    }
-	}, [tokens])
+	}, [tokens, vetPrice])
 
   useEffect(() => {
     const calculate = () => {
       const stats = tokens.reduce((acc, curr) => {
+
         return {
-          tvl: acc.tvl.plus(Big(curr.reserves)),
-          vol: acc.vol.plus(Big(curr.volume))
+          tvl: acc.tvl.plus(Big(curr.tvlInUsd)),
+          vol: acc.vol.plus(Big(curr.volumeInVet))
         }
       }, { tvl: new Big(0), vol: new Big(0)})
 
       setTVL(stats.tvl.toString())
-      setVol(stats.vol.toString())
+      setVol(stats.vol)
     }
 
     if (tokens.length !== 0) {
@@ -151,18 +159,18 @@ export default function Home() {
               <Box width={1/2} px={3}>
                 <Card>
                   <Label>TVL</Label>
-                  <LargeText>{ formatCurrency((tvl * price).toFixed(2)) }</LargeText>
+                  <LargeText>{ formatCurrency( tvl ) }</LargeText>
                 </Card>
               </Box>
               <Box width={1/2} px={3}>
                 <Card>
                   <Label>Volume 24H</Label>
-                  <LargeText>{ formatCurrency((vol * price).toFixed(2)) }</LargeText>
+                  <LargeText>{ formatCurrency((vol * vetPrice).toFixed(2)) }</LargeText>
                 </Card>
               </Box>
             </Flex>
             <Text mb={3}>Top Tokens</Text>
-            <TokenTable tokens={tokens} price={price} />
+            <TokenTable tokens={tokens} vetPrice={vetPrice} />
           </>
         )}
     </PageWrapper>
