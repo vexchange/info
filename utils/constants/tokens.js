@@ -53,5 +53,10 @@ export const allTokens = [
     address: '0x0BD802635eb9cEB3fCBe60470D2857B86841aab6',
     symbol: 'VEX',
     name: "Vexchange"
+  },
+  {
+    address: '0x99763494a7b545f983ee9fe02a3b5441c7ef1396',
+    symbol: "MVG",
+    name: "Mad Viking Games"
   }
 ]
