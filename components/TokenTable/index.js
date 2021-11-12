@@ -7,7 +7,7 @@ import Card from '../Card'
 import Row from '../Row'
 import TokenLogo from '../TokenLogo'
 import FormattedName from '../FormattedName'
-import { formattedNum, formattedPercent } from '../../utils'
+import { formatCurrency, formattedPercent } from '../../utils'
 
 const Divider = styled(Box)`
   height: 1px;
@@ -172,14 +172,14 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
         </DataText>
       )}
       {!below320 && (
-        <DataText area="liq">{formattedNum((item.tvlInUsd), true)}</DataText>
+        <DataText area="liq">{formatCurrency(item.tvlInUsd)}</DataText>
       )}
       <DataText area="vol">
-        {formattedNum((item.volumeInVet * vetPrice), true)}
+        {formatCurrency(item.volumeInVet * vetPrice)}
       </DataText>
       {!below1080 && (
         <DataText area="price" color="text" fontWeight="500">
-          {formattedNum((item.price.base2quote * vetPrice), true)}
+          {formatCurrency(item.price.base2quote * vetPrice)}
         </DataText>
       )}
       {!below1080 && <DataText area="apr">{formattedPercent(item.annualizedFeeApr)}</DataText>}
