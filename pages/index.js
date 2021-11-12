@@ -42,7 +42,8 @@ const bounce = keyframes`
 `
 
 const HeaderWrapper = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap}
+  display: flex;
+  flex-flow: column nowrap;
   top: 0;
   left: 0;
   width: 100%;
@@ -155,20 +156,22 @@ export default function Home() {
 
         ) : (
           <>
-            <Flex mx={-3} mb={4}>
-              <Box width={1/2} px={3}>
+
+            <Flex mx={-3} mb={4} flexDirection={['column', 'row']}>
+              <Box flex='1' px={3}>
                 <Card>
                   <Label>TVL</Label>
                   <LargeText>{ formatCurrency( tvl ) }</LargeText>
                 </Card>
               </Box>
-              <Box width={1/2} px={3}>
+              <Box flex='1' px={3} mt={[3, 0]}>
                 <Card>
                   <Label>Volume 24H</Label>
                   <LargeText>{ formatCurrency((vol * vetPrice).toFixed(2)) }</LargeText>
                 </Card>
               </Box>
             </Flex>
+
             <Text mb={3}>Top Tokens</Text>
             <TokenTable tokens={tokens} vetPrice={vetPrice} />
           </>
