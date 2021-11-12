@@ -22,7 +22,8 @@ const BodyWrapper = styled.div`
   > * {
     max-width: 1200px;
   }
-  @media (max-width: 1080px) {
+
+  @media screen and (min-width: 680px) {
     padding-top: 2rem;
     margin-top: 140px;
   }

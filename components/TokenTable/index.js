@@ -9,22 +9,6 @@ import TokenLogo from '../TokenLogo'
 import FormattedName from '../FormattedName'
 import { formattedNum, formattedPercent } from '../../utils'
 
-const ResponsiveGrid = styled.div`
-  display: grid;
-  grid-gap: 1em;
-  align-items: center;
-  grid-template-columns: 20px 3fr repeat(4, 1fr);
-
-  @media screen and (max-width: 900px) {
-    grid-template-columns: 20px 1.5fr repeat(3, 1fr);
-  }
-
-  @media screen and (max-width: 800px) {
-    grid-template-columns: 20px 1.5fr repeat(4, 1fr);
-  }
-
-`
-
 const Divider = styled(Box)`
   height: 1px;
   background-color: 'rgba(43, 43, 43, 0.435)';
@@ -34,20 +18,13 @@ const Wrapper = styled(Card)`
 	margin-bottom: 200px;
 `
 
-const Ticker = styled.span`
-	box-sizing: border-box;
-	margin: 0px 0px 0px 8px;
-	min-width: 0px;
-	font-weight: 500;
-	color: rgb(108, 114, 132);
-`
-
 const DashGrid = styled.div`
   display: grid;
   grid-gap: 1em;
-  grid-template-columns: 100px 1fr 1fr;
-  grid-template-areas: 'name liq vol';
+  grid-template-columns: 100px 1fr;
+  grid-template-areas: 'name vol';
   padding: 0 1.125rem;
+
   > * {
     justify-content: flex-end;
 
@@ -56,6 +33,14 @@ const DashGrid = styled.div`
       text-align: left;
     }
   }
+
+  @media screen and (min-width: 319px) {
+    display: grid;
+    grid-gap: 1em;
+    grid-template-columns: 100px 1fr 1fr;
+    grid-template-areas: 'name liq vol';
+  }
+
   @media screen and (min-width: 680px) {
     display: grid;
     grid-gap: 1em;
@@ -117,7 +102,6 @@ const SORT_FIELD = {
 
 const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
 	const [page, setPage] = useState(1)
-	const [sortField, setSortField] = useState(SORT_FIELD.tvlInUsd)
 	const [maxPage, setMaxPage] = useState(1)
 
 	  // sorting
@@ -127,6 +111,7 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
 	const below1080 = useMedia('(max-width: 1080px)')
   const below680 = useMedia('(max-width: 680px)')
   const below600 = useMedia('(max-width: 600px)')
+  const below320 = useMedia('(max-width: 320px)')
 
 	useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -186,8 +171,12 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
           <FormattedName text={item.symbol} maxCharacters={5} />
         </DataText>
       )}
-      <DataText area="liq">{formattedNum((item.tvlInUsd), true)}</DataText>
-      <DataText area="vol">{formattedNum((item.volumeInVet * vetPrice), true)}</DataText>
+      {!below320 && (
+        <DataText area="liq">{formattedNum((item.tvlInUsd), true)}</DataText>
+      )}
+      <DataText area="vol">
+        {formattedNum((item.volumeInVet * vetPrice), true)}
+      </DataText>
       {!below1080 && (
         <DataText area="price" color="text" fontWeight="500">
           {formattedNum((item.price.base2quote * vetPrice), true)}
@@ -226,29 +215,31 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
             </ClickableText>
           </Flex>
         )}
-				<Flex alignItems="center">
-          <ClickableText
-            area="liq"
-            onClick={(e) => {
-              setSortedColumn(SORT_FIELD.LIQ)
-              setSortDirection(sortedColumn !== SORT_FIELD.LIQ ? true : !sortDirection)
-            }}
-          >
-            Liquidity {sortedColumn === SORT_FIELD.LIQ ? (!sortDirection ? '↑' : '↓') : ''}
-          </ClickableText>
-        </Flex>
+        {!below320 && (
+          <Flex alignItems="center">
+            <ClickableText
+              area="liq"
+              onClick={(e) => {
+                setSortedColumn(SORT_FIELD.LIQ)
+                setSortDirection(sortedColumn !== SORT_FIELD.LIQ ? true : !sortDirection)
+              }}
+            >
+              Liquidity {sortedColumn === SORT_FIELD.LIQ ? (!sortDirection ? '↑' : '↓') : ''}
+            </ClickableText>
+          </Flex>
+        )}
         <Flex alignItems="center">
           <ClickableText
             area="vol"
             onClick={() => {
-              setSortedColumn(useTracked ? SORT_FIELD.VOL_UT : SORT_FIELD.VOL)
+              setSortedColumn(SORT_FIELD.VOL)
               setSortDirection(
-                sortedColumn !== (useTracked ? SORT_FIELD.VOL_UT : SORT_FIELD.VOL) ? true : !sortDirection
+                sortedColumn !== SORT_FIELD.VOL ? true : !sortDirection
               )
             }}
           >
             Volume (24hrs)
-            {sortedColumn === (useTracked ? SORT_FIELD.VOL_UT : SORT_FIELD.VOL) ? (!sortDirection ? '↑' : '↓') : ''}
+            {sortedColumn === SORT_FIELD.VOL ? (!sortDirection ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
 				{!below1080 && (
