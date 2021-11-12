@@ -269,12 +269,12 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
             <ClickableText
               area="apr"
               onClick={(e) => {
-                setSortedColumn(SORT_FIELD.CHANGE)
-                setSortDirection(sortedColumn !== SORT_FIELD.CHANGE ? true : !sortDirection)
+                setSortedColumn(SORT_FIELD.APR)
+                setSortDirection(sortedColumn !== SORT_FIELD.APR ? true : !sortDirection)
               }}
             >
               APR
-              {sortedColumn === SORT_FIELD.CHANGE ? (!sortDirection ? '↑' : '↓') : ''}
+              {sortedColumn === SORT_FIELD.APR ? (!sortDirection ? '↑' : '↓') : ''}
             </ClickableText>
           </Flex>
         )}
