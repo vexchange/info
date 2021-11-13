@@ -3,7 +3,7 @@ import { BookOpen, Code, Info, MessageCircle } from 'react-feather'
 import Link from 'next/link';  
 import styled from '@emotion/styled'
 import MenuIcon from './MenuIcon.js'
-import useOnClickOutside from '../../hooks/useOnClickOutside.js';
+import { useOnClickOutside } from '../../hooks/index.js';
 
 const StyledMenuIcon = styled(MenuIcon)`
   path {

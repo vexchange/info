@@ -8,7 +8,6 @@ import Polling from './Polling'
 
 const Wrapper = styled.div`
   width: 100%;
-  background-color: ${({ theme }) => theme.black};
   padding: 10px 20px;
 `
 
@@ -18,7 +17,7 @@ const Item = styled(TYPE.main)`
 
 const StyledLink = styled(ExternalLink)`
   font-size: 12px;
-  color: ${({ theme }) => theme.text1};
+  color: #FAFAFA;
 `
 
 const TopBar = () => {
