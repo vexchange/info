@@ -34,18 +34,18 @@ const DashGrid = styled.div`
     }
   }
 
-  @media screen and (min-width: 319px) {
+  @media screen and (min-width: 320px) {
     display: grid;
     grid-gap: 1em;
     grid-template-columns: 100px 1fr 1fr;
-    grid-template-areas: 'name liq vol';
+    grid-template-areas: 'name vol price';
   }
 
   @media screen and (min-width: 680px) {
     display: grid;
     grid-gap: 1em;
     grid-template-columns: 180px 1fr 1fr 1fr;
-    grid-template-areas: 'name symbol liq vol ';
+    grid-template-areas: 'name symbol liq vol price';
     > * {
       justify-content: flex-end;
       width: 100%;
@@ -108,10 +108,16 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
 		const [sortDirection, setSortDirection] = useState(true)
 		const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.VOL)
 
-	const below1080 = useMedia('(max-width: 1080px)')
-  const below680 = useMedia('(max-width: 680px)')
-  const below600 = useMedia('(max-width: 600px)')
-  const below320 = useMedia('(max-width: 320px)')
+	const ifBelow1080 = useMedia('(max-width: 1080px)')
+  const ifAbove1080 = !ifBelow1080
+
+  const ifBelow680 = useMedia('(max-width: 680px)')
+  const ifAbove680 = !ifBelow680
+
+  const ifBelow600 = useMedia('(max-width: 600px)')
+
+  const ifBelow320 = useMedia('(max-width: 320px)')
+  const ifAbove320 = !ifBelow320
 
 	useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -155,34 +161,34 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
     <DashGrid style={{ height: '48px' }} focus={true}>
       <DataText area="name" fontWeight="500">
         <Row>
-          {!below680 && <div style={{ marginRight: '1rem', width: '10px' }}>{index}</div>}
+          {ifAbove680 && <div style={{ marginRight: '1rem', width: '10px' }}>{index}</div>}
           <TokenLogo address={item.address} />
           <FormattedName
             margin='15px'
-            text={below680 ? item.symbol : item.name}
-            maxCharacters={below600 ? 8 : 16}
+            text={ifBelow680 ? item.symbol : item.name}
+            maxCharacters={ifBelow600 ? 8 : 16}
             adjustSize={true}
             link={true}
           />
         </Row>
       </DataText>
-      {!below680 && (
+      {ifAbove680 && (
         <DataText area="symbol" color="text" fontWeight="500">
           <FormattedName text={item.symbol} maxCharacters={5} />
         </DataText>
       )}
-      {!below320 && (
+      {ifAbove1080 && (
         <DataText area="liq">{formatCurrency(item.tvlInUsd)}</DataText>
       )}
-      <DataText area="vol">
-        {formatCurrency(item.volumeInVet * vetPrice)}
-      </DataText>
-      {!below1080 && (
-        <DataText area="price" color="text" fontWeight="500">
-          {formatCurrency(item.price.base2quote * vetPrice)}
+      {ifAbove320 && (
+        <DataText area="vol">
+          {formatCurrency(item.volumeInVet * vetPrice)}
         </DataText>
       )}
-      {!below1080 && <DataText area="apr">{formattedPercent(item.annualizedFeeApr)}</DataText>}
+      <DataText area="price" color="text" fontWeight="500">
+        {formatCurrency(item.price.base2quote * vetPrice)}
+      </DataText>
+      {ifAbove1080 && <DataText area="apr">{formattedPercent(item.annualizedFeeApr)}</DataText>}
     </DashGrid>
   )
 
@@ -199,10 +205,10 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
               setSortDirection(sortedColumn !== SORT_FIELD.NAME ? true : !sortDirection)
             }}
           >
-            {below680 ? 'Symbol' : 'Name'} {sortedColumn === SORT_FIELD.NAME ? (!sortDirection ? '↑' : '↓') : ''}
+            {ifBelow680 ? 'Symbol' : 'Name'} {sortedColumn === SORT_FIELD.NAME ? (!sortDirection ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
-				{!below680 && (
+				{ifAbove680 && (
           <Flex alignItems="center">
             <ClickableText
               area="symbol"
@@ -215,7 +221,7 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
             </ClickableText>
           </Flex>
         )}
-        {!below680 && (
+        {ifAbove1080 && (
           <Flex alignItems="center">
             <ClickableText
               area="liq"
@@ -228,7 +234,7 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
             </ClickableText>
           </Flex>
         )}
-				{!below320 && (
+				{ifAbove320 && (
           <Flex alignItems="center">
             <ClickableText
               area="vol"
@@ -255,7 +261,7 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
             Price {sortedColumn === SORT_FIELD.PRICE ? (!sortDirection ? '↑' : '↓') : ''}
           </ClickableText>
         </Flex>
-        {!below1080 && (
+        {ifAbove1080 && (
           <Flex alignItems="center">
             <ClickableText
               area="apr"
