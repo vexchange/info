@@ -1,64 +1,19 @@
 import React, { useEffect, useState, useMemo } from 'react'
-import { Box, Flex, Text } from 'rebass'
+import { Flex, Text } from 'rebass'
 import styled from '@emotion/styled'
 import { useMedia } from 'react-use'
 
 import Card from '../Card'
-import Row from '../Row'
 import TokenLogo from '../TokenLogo'
 import FormattedName from '../FormattedName'
 import { formatCurrency, formattedPercent } from '../../utils'
 
-const Divider = styled(Box)`
-  height: 1px;
-  background-color: 'rgba(43, 43, 43, 0.435)';
-`
-
 const Wrapper = styled(Card)`
 	margin-bottom: 200px;
-`
 
-const DashGrid = styled.div`
-  display: grid;
-  grid-gap: 1em;
-  grid-template-columns: 100px 1fr;
-  grid-template-areas: 'price vol';
-  padding: 0 1.125rem;
-
-  > * {
-    justify-content: flex-end;
-
-    &:first-of-type {
-      justify-content: flex-start;
-      text-align: left;
-    }
-  }
-
-  @media screen and (min-width: 320px) {
-    display: grid;
-    grid-gap: 1em;
-    grid-template-columns: 100px 1fr 1fr;
-    grid-template-areas: 'name vol price';
-  }
-
-  @media screen and (min-width: 680px) {
-    display: grid;
-    grid-gap: 1em;
-    grid-template-columns: 180px 1fr 1fr 1fr;
-    grid-template-areas: 'name symbol liq vol price';
-    > * {
-      justify-content: flex-end;
-      width: 100%;
-      &:first-of-type {
-        justify-content: flex-start;
-      }
-    }
-  }
-  @media screen and (min-width: 1080px) {
-    display: grid;
-    grid-gap: 0.5em;
-    grid-template-columns: 1.5fr 0.6fr 1fr 1fr 1fr 1fr;
-    grid-template-areas: 'name symbol liq vol price apr';
+  @media screen and (max-width: 640px) {
+    background: none;
+    padding: 0;
   }
 `
 
@@ -75,10 +30,6 @@ const ClickableText = styled(Text)`
   }
 `
 
-const List = styled(Box)`
-  -webkit-overflow-scrolling: touch;
-`
-
 const DataText = styled(Flex)`
   align-items: center;
   text-align: center;
@@ -88,6 +39,62 @@ const DataText = styled(Flex)`
   }
   @media screen and (max-width: 600px) {
     font-size: 12px;
+  }
+`
+
+const Table = styled.table`
+  border-collapse: collapse;
+
+  th {
+    font-weight: normal;
+  }
+
+  td, th {
+    border: none;
+    padding: 15px;
+  }
+
+  @media screen and (max-width: 640px) {
+    border: 0;
+
+    thead {
+      border: none;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+
+    tr {
+      border-radius: 16px;
+      display: block;
+      margin-bottom: 20px;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      background-color: rgb(25, 27, 31);
+    }
+
+    td {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-left: 0;
+      padding-right: 0;
+
+      &:not(:last-of-type) {
+        border-bottom: 1px solid rgb(64, 68, 79);
+      }
+
+      &::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        margin-right: 8px;
+      }
+    }
   }
 `
 
@@ -108,16 +115,9 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
 		const [sortDirection, setSortDirection] = useState(true)
 		const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.VOL)
 
-	const ifBelow1080 = useMedia('(max-width: 1080px)')
-  const ifAbove1080 = !ifBelow1080
-
   const ifBelow680 = useMedia('(max-width: 680px)')
-  const ifAbove680 = !ifBelow680
-
+  const ifBelow640 = useMedia('(max-width: 640px)')
   const ifBelow600 = useMedia('(max-width: 600px)')
-
-  const ifBelow320 = useMedia('(max-width: 320px)')
-  const ifAbove320 = !ifBelow320
 
 	useEffect(() => {
     setMaxPage(1) // edit this to do modular
@@ -157,136 +157,139 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
     )
   }, [formattedTokens, itemMax, page, sortDirection, sortedColumn])
 
-	const ListItem = ({ item, index }) => (
-    <DashGrid style={{ height: '48px' }} focus={true}>
-      <DataText area="name" fontWeight="500">
-        <Row>
-          {ifAbove680 && <div style={{ marginRight: '1rem', width: '10px' }}>{index}</div>}
-          <TokenLogo address={item.address} />
-          <FormattedName
-            margin='15px'
-            text={ifBelow680 ? item.symbol : item.name}
-            maxCharacters={ifBelow600 ? 8 : 16}
-            adjustSize={true}
-            link={true}
-          />
-        </Row>
-      </DataText>
-      {ifAbove680 && (
-        <DataText area="symbol" color="text" fontWeight="500">
-          <FormattedName text={item.symbol} maxCharacters={5} />
-        </DataText>
-      )}
-      {ifAbove1080 && (
-        <DataText area="liq">{formatCurrency(item.tvlInUsd)}</DataText>
-      )}
-      {ifAbove320 && (
-        <DataText area="vol">
-          {formatCurrency(item.volumeInVet * vetPrice)}
-        </DataText>
-      )}
-      <DataText area="price" color="text" fontWeight="500">
-        {formatCurrency(item.price.base2quote * vetPrice)}
-      </DataText>
-      {ifAbove1080 && <DataText area="apr">{formattedPercent(item.annualizedFeeApr)}</DataText>}
-    </DashGrid>
-  )
-
 	return (
 		<Wrapper>
-			<DashGrid center={true} style={{ height: 'fit-content', padding: '0 1.125rem 1rem 1.125rem' }}>
-				<Flex alignItems="center" justifyContent="flexStart">
-          <ClickableText
-            color="text"
-            area="name"
-            fontWeight="500"
-            onClick={(e) => {
-              setSortedColumn(SORT_FIELD.NAME)
-              setSortDirection(sortedColumn !== SORT_FIELD.NAME ? true : !sortDirection)
-            }}
-          >
-            {ifBelow680 ? 'Symbol' : 'Name'} {sortedColumn === SORT_FIELD.NAME ? (!sortDirection ? '↑' : '↓') : ''}
-          </ClickableText>
-        </Flex>
-				{ifAbove680 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="symbol"
-              onClick={() => {
-                setSortedColumn(SORT_FIELD.SYMBOL)
-                setSortDirection(sortedColumn !== SORT_FIELD.SYMBOL ? true : !sortDirection)
-              }}
-            >
-              Symbol {sortedColumn === SORT_FIELD.SYMBOL ? (!sortDirection ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-        {ifAbove1080 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="liq"
-              onClick={(e) => {
-                setSortedColumn(SORT_FIELD.LIQ)
-                setSortDirection(sortedColumn !== SORT_FIELD.LIQ ? true : !sortDirection)
-              }}
-            >
-              Liquidity {sortedColumn === SORT_FIELD.LIQ ? (!sortDirection ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-				{ifAbove320 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="vol"
-              onClick={() => {
-                setSortedColumn(SORT_FIELD.VOL)
-                setSortDirection(
-                  sortedColumn !== SORT_FIELD.VOL ? true : !sortDirection
-                )
-              }}
-            >
-              Volume (24hrs)
-              {sortedColumn === SORT_FIELD.VOL ? (!sortDirection ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-        <Flex alignItems="center">
-          <ClickableText
-            area="price"
-            onClick={(e) => {
-              setSortedColumn(SORT_FIELD.PRICE)
-              setSortDirection(sortedColumn !== SORT_FIELD.PRICE ? true : !sortDirection)
-            }}
-          >
-            Price {sortedColumn === SORT_FIELD.PRICE ? (!sortDirection ? '↑' : '↓') : ''}
-          </ClickableText>
-        </Flex>
-        {ifAbove1080 && (
-          <Flex alignItems="center">
-            <ClickableText
-              area="apr"
-              onClick={(e) => {
-                setSortedColumn(SORT_FIELD.APR)
-                setSortDirection(sortedColumn !== SORT_FIELD.APR ? true : !sortDirection)
-              }}
-            >
-              APR
-              {sortedColumn === SORT_FIELD.APR ? (!sortDirection ? '↑' : '↓') : ''}
-            </ClickableText>
-          </Flex>
-        )}
-			</DashGrid>
-			<Divider />
-			<List p={0}>
-        {filteredList && filteredList.map((item, index) => {
-					return (
-						<div key={index}>
-							<ListItem key={index} index={(page - 1) * itemMax + index + 1} item={item} />
-							<Divider />
-						</div>
-					)
-				})}
-      </List>
+
+      <Table>
+        <thead>
+          <tr>
+            <th>
+              <Flex alignItems="center" justifyContent="flexStart">
+                <ClickableText
+                  color="text"
+                  area="name"
+                  fontWeight="500"
+                  onClick={e => {
+                    setSortedColumn(SORT_FIELD.NAME)
+                    setSortDirection(sortedColumn !== SORT_FIELD.NAME ? true : !sortDirection)
+                  }}
+                >
+                  {ifBelow680 ? 'Symbol' : 'Name'} {sortedColumn === SORT_FIELD.NAME ? (!sortDirection ? '↑' : '↓') : ''}
+                </ClickableText>
+              </Flex>
+            </th>
+            {!ifBelow640 && (
+              <th>
+                <ClickableText
+                  area="symbol"
+                  onClick={() => {
+                    setSortedColumn(SORT_FIELD.SYMBOL)
+                    setSortDirection(sortedColumn !== SORT_FIELD.SYMBOL ? true : !sortDirection)
+                  }}
+                >
+                  Symbol {sortedColumn === SORT_FIELD.SYMBOL ? (!sortDirection ? '↑' : '↓') : ''}
+                </ClickableText>
+              </th>
+            )}
+            <th>
+              <ClickableText
+                area="liq"
+                onClick={e => {
+                  setSortedColumn(SORT_FIELD.LIQ)
+                  setSortDirection(sortedColumn !== SORT_FIELD.LIQ ? true : !sortDirection)
+                }}
+              >
+                Liquidity {sortedColumn === SORT_FIELD.LIQ ? (!sortDirection ? '↑' : '↓') : ''}
+              </ClickableText>
+            </th>
+            <th>
+              <ClickableText
+                area="vol"
+                onClick={() => {
+                  setSortedColumn(SORT_FIELD.VOL)
+                  setSortDirection(
+                    sortedColumn !== SORT_FIELD.VOL ? true : !sortDirection
+                  )
+                }}
+              >
+                Volume (24hrs)
+                {sortedColumn === SORT_FIELD.VOL ? (!sortDirection ? '↑' : '↓') : ''}
+              </ClickableText>
+            </th>
+            <th>
+              <ClickableText
+                area="price"
+                onClick={(e) => {
+                  setSortedColumn(SORT_FIELD.PRICE)
+                  setSortDirection(sortedColumn !== SORT_FIELD.PRICE ? true : !sortDirection)
+                }}
+              >
+                Price {sortedColumn === SORT_FIELD.PRICE ? (!sortDirection ? '↑' : '↓') : ''}
+              </ClickableText>
+            </th>
+            <th>
+              <ClickableText
+                area="apr"
+                onClick={(e) => {
+                  setSortedColumn(SORT_FIELD.APR)
+                  setSortDirection(sortedColumn !== SORT_FIELD.APR ? true : !sortDirection)
+                }}
+              >
+                APR
+                {sortedColumn === SORT_FIELD.APR ? (!sortDirection ? '↑' : '↓') : ''}
+              </ClickableText>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredList && filteredList.map((item, index) => {
+            return (
+              <tr key={index}>
+                <td data-label="Name:">
+                  <DataText area="name" fontWeight="500">
+                    {!ifBelow640 && (
+                      <>
+                        <div style={{ marginRight: '1rem', width: '10px' }}>{index}</div>
+                        <TokenLogo address={item.address} />
+                      </>
+                    )}
+                    <FormattedName
+                      margin='15px'
+                      text={ifBelow680 ? item.symbol : item.name}
+                      maxCharacters={ifBelow600 ? 8 : 16}
+                      adjustSize={true}
+                      link={true}
+                    />
+                  </DataText>
+                </td>
+                {!ifBelow640 && (
+                  <td data-label="Symbol:">
+                    <DataText area="symbol" color="text" fontWeight="500" justifyContent="flex-end">
+                      <FormattedName text={item.symbol} maxCharacters={5} />
+                    </DataText>
+                  </td>
+                )}
+                <td data-label="Liquidity:">
+                  <DataText area="liq" justifyContent="flex-end">{formatCurrency(item.tvlInUsd)}</DataText>
+                </td>
+                <td data-label="Volume:">
+                  <DataText area="vol" justifyContent="flex-end">
+                    {formatCurrency(item.volumeInVet * vetPrice)}
+                  </DataText>
+                </td>
+                <td data-label="Price:">
+                  <DataText area="price" color="text" fontWeight="500" justifyContent="flex-end">
+                    {formatCurrency(item.price.base2quote * vetPrice)}
+                  </DataText>
+                </td>
+                <td data-label="APR:">
+                  <DataText area="apr" justifyContent="flex-end">{formattedPercent(item.annualizedFeeApr)}</DataText>
+                </td>
+              </tr>
+            )
+          })}
+        </tbody>
+      </Table>
 		</Wrapper>
 	)
 }
