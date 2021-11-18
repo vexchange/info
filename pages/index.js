@@ -160,7 +160,7 @@ export default function Home() {
             <Flex mx={-3} mb={4} flexDirection={['column', 'row']}>
               <Box flex='1' px={3}>
                 <Card>
-                  <Label>TVL</Label>
+                  <Label>Total Value Locked</Label>
                   <LargeText>{ formatCurrency( tvl ) }</LargeText>
                 </Card>
               </Box>
