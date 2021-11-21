@@ -2,6 +2,7 @@ import Web3 from "web3";
 import { thorify } from "thorify";
 import { utils } from "ethers";
 import { Driver, SimpleNet } from "@vechain/connex-driver";
+import { Fetcher } from "vexchange-sdk";
 import Pair from "../../utils/abis/IVexchangeV2Pair.json";
 import { Framework } from "@vechain/connex-framework";
 
@@ -24,8 +25,6 @@ const handler = async (req, res) => {
     poolContract.methods.token1().call(),
   ]);
 
-  console.log(pair);
-
   const vetPosition = getETHPosition(pair);
 
   let volumeInVet = 0;
@@ -33,16 +32,18 @@ const handler = async (req, res) => {
   let price = 0;
 
   //pools without VET are not considered
-  if (vetPosition !== 3) {
+  if (vetPosition > 0) {
     volumeInVet = await getVolume(connex, poolContract, vetPosition);
-    console.log("vol", volumeInVet);
     reserves = await getReserves(connex, pair, vetPosition);
+    const nonVetAddress = pair[1 - vetPosition];
+    const token = await Fetcher.fetchTokenData(1, nonVetAddress, connex);
     price = await getPrice(
       connex,
-      address,
+      nonVetAddress,
       "0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997",
       token.decimals
     );
+    console.log("price", price);
   }
 
   res.status(200).json({
