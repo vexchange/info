@@ -20,13 +20,23 @@ const LargeText = styled.p`
   margin: 0;
 `
 
+const SpecialText = styled(Text)`
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
+`
+
 const Label = styled.span`
-  color: rgb(108, 114, 132);
+  display: inline-block;
+  background-color: #f5a78814;
+  color: #f5a788;
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
   box-sizing: border-box;
-  margin: 0px;
+  margin-bottom: 20px;
   min-width: 0px;
-  font-weight: 500;
-  font-size: 16px;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 8px;
 `
 
 const CoinGeckoClient = new CoinGecko();
@@ -133,7 +143,7 @@ export default function Home() {
       <HeaderWrapper>
         <Header />
       </HeaderWrapper>
-      <Text mb={3}>Vexchange Overview</Text>
+      <SpecialText mb={3}>Vexchange Overview</SpecialText>
       { tokens.length === 0 
         ? (
           <Box
@@ -172,7 +182,7 @@ export default function Home() {
               </Box>
             </Flex>
 
-            <Text mb={3}>Top Tokens</Text>
+            <SpecialText mb={3}>Top Tokens</SpecialText>
             <TokenTable tokens={tokens} vetPrice={vetPrice} />
           </>
         )}
