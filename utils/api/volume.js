@@ -9,7 +9,7 @@ export const getETHPosition = (pair) => {
     return 0;
   } else if (pair[1] === wvet.address) {
     return 1;
-  } else return 3;
+  } else return -1;
 };
 
 /**
@@ -29,8 +29,6 @@ const getVolume = async (connex, poolContract, ethPosition) => {
     fromBlock: FROM_BLOCK,
     toBlock: TO_BLOCK,
   });
-
-  console.log(events);
 
   const total = events.reduce((acc, curr) => {
     const values = curr.returnValues;

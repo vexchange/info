@@ -24,6 +24,8 @@ const handler = async (req, res) => {
     poolContract.methods.token1().call(),
   ]);
 
+  console.log(pair);
+
   const vetPosition = getETHPosition(pair);
 
   let volumeInVet = 0;
@@ -33,6 +35,7 @@ const handler = async (req, res) => {
   //pools without VET are not considered
   if (vetPosition !== 3) {
     volumeInVet = await getVolume(connex, poolContract, vetPosition);
+    console.log("vol", volumeInVet);
     reserves = await getReserves(connex, pair, vetPosition);
     price = await getPrice(
       connex,
