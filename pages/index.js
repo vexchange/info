@@ -70,7 +70,7 @@ export default function Home() {
   const [tvl, setTVL] = useState(0);
   const [vol, setVol] = useState(0);
 
-  console.log(pairs);
+  console.log("all pairs ", pairs);
 
   useEffect(() => {
     const getVexchangePairs = async () => {
@@ -94,10 +94,11 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!vetPrice || tokens.length > 0) return;
-    const promises = allTokens.map(async (item) => {
-      const { data } = await axios.get(`/api/${item.address}`);
-      item = { ...data, ...item };
+    if (!vetPrice || tokens.length > 0 || pairs.length === 0) return;
+    const promises = pairs.map(async (item) => {
+      const { data } = await axios.get(`/api/${item}`);
+
+      item = { ...data };
 
       // Multiplied by two because it's a 50-50 pool
       item.tvlInUsd = item.reserves * item.price.base2quote * vetPrice * 2;
@@ -112,14 +113,13 @@ export default function Home() {
           0.0075 * // Fee generated in a day, currently hardcoded to 0.75%
           365) / // Annualized
         item.tvlInUsd;
-
       return item;
     });
 
     Promise.all(promises).then((data) => {
       setTokens(data);
     });
-  }, [tokens, vetPrice]);
+  }, [tokens, vetPrice, pairs]);
 
   useEffect(() => {
     const calculate = () => {
