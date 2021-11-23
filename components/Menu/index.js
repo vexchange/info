@@ -92,7 +92,7 @@ const MenuItemInner = styled.div`
   }
 `
 
-const CODE_LINK = 'https://github.com/kennethashley/info'
+const CODE_LINK = 'https://github.com/vexchange/info'
 
 export default function Menu() {
   const ref = useRef();
