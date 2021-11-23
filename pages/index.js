@@ -143,7 +143,6 @@ export default function Home() {
       <HeaderWrapper>
         <Header />
       </HeaderWrapper>
-      <SpecialText mb={3}>Vexchange Overview</SpecialText>
       { tokens.length === 0 
         ? (
           <Box
@@ -166,7 +165,7 @@ export default function Home() {
 
         ) : (
           <>
-
+            <SpecialText mb={3}>Vexchange Overview</SpecialText>
             <Flex mx={-3} mb={4} flexDirection={['column', 'row']}>
               <Box flex='1' px={3}>
                 <Card>
