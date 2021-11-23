@@ -1,18 +1,12 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { BookOpen, Code, Info, MessageCircle } from 'react-feather'
 import Link from 'next/link';  
 import styled from '@emotion/styled'
-import MenuIcon from './MenuIcon.js'
 import { useOnClickOutside } from '../../hooks/index.js';
 
-const StyledMenuIcon = styled(MenuIcon)`
-  path {
-    fill: white;
-    stroke: rgb(255, 255, 255);
-  }
-`
-
 const StyledMenuButton = styled.button`
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
   width: 100%;
   height: 100%;
   border: none;
@@ -20,16 +14,17 @@ const StyledMenuButton = styled.button`
   margin: 0;
   padding: 0;
   height: 35px;
-  background-color: rgb(64, 68, 79);
+  background-color: #f5a78814;
 
   padding: 0.15rem 0.5rem;
-  border-radius: 0.5rem;
+  border-radius: 8px;
+  color: #f5a788;
 
   :hover,
   :focus {
     cursor: pointer;
     outline: none;
-    background-color: rgb(86, 90, 105);
+    opacity: 0.64;
   }
 
   svg {
@@ -49,43 +44,55 @@ const StyledMenu = styled.div`
 
 const MenuFlyout = styled.span`
   min-width: 8.125rem;
-  background-color: rgb(64, 68, 79);
+  background-color: rgb(18, 18, 24);
   box-shadow: 0px 0px 1px rgba(0, 0, 0, 0.01), 0px 4px 8px rgba(0, 0, 0, 0.04), 0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 24px 32px rgba(0, 0, 0, 0.01);
-  border-radius: 12px;
-  padding: 0.5rem;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: 2.6rem;
-  right: 0rem;
+  top: 40px;
+  right: 0px;
   z-index: 100;
 `
 
 const MenuItem = styled(Link)`
   flex: 1;
-  color: rgb(195, 197, 203);
-  :hover {
-    color: rgb(255, 255, 255);
-    cursor: pointer;
-    text-decoration: none;
-    opacity: 0.6;
-  }
 `
 
 const MenuItemInner = styled.div`
+  color: rgba(255, 255, 255, 0.64);
   display: flex;
   align-items: center;
-  padding: 0.5rem;
+  padding: 8px 38px 8px 16px;
   cursor: pointer;
+  text-transform: uppercase;
+  font-family: VCR, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+
+  &:hover {
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    text-decoration: none;
+  }
   
   > svg {
     margin-right: 8px;
   }
+
+  
+  &:first-of-type {
+    padding-top: 16px;
+  }
+
+  &:last-of-type {
+    padding-bottom: 16px;
+  }
 `
 
-const CODE_LINK = 'https://github.com/kennethashley/info'
+const CODE_LINK = 'https://github.com/vexchange/info'
 
 export default function Menu() {
   const ref = useRef();
@@ -95,7 +102,7 @@ export default function Menu() {
   return (
     <StyledMenu ref={ref}>
 			<StyledMenuButton onClick={() => setIsOpen(true)}>
-        <StyledMenuIcon />
+        Important Links
       </StyledMenuButton>
 
 			{isOpen &&

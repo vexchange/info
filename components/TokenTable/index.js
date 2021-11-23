@@ -69,7 +69,7 @@ const Table = styled.table`
     }
 
     tr {
-      border-radius: 16px;
+      border-radius: 8px;
       display: block;
       margin-bottom: 20px;
       padding-left: 1rem;
@@ -249,7 +249,7 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
                   <DataText area="name" fontWeight="500">
                     {!ifBelow640 && (
                       <>
-                        <div style={{ marginRight: '1rem', width: '10px' }}>{index}</div>
+                        <div style={{ marginRight: '1rem', width: '10px' }}>{index + 1}</div>
                         <TokenLogo address={item.address} />
                       </>
                     )}
