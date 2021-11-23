@@ -54,6 +54,7 @@ const handler = async (req, res) => {
     reserves,
     volumeInVet,
     token,
+    pair,
   });
 };
 

@@ -113,6 +113,10 @@ export default function Home() {
           0.0075 * // Fee generated in a day, currently hardcoded to 0.75%
           365) / // Annualized
         item.tvlInUsd;
+
+      item.token0 = allTokens.find((e) => e.address === item.pair[0]);
+      item.token1 = allTokens.find((e) => e.address === item.pair[1]);
+
       return item;
     });
 
