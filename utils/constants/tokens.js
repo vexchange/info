@@ -64,4 +64,9 @@ export const allTokens = [
     symbol: "MVG",
     name: "Mad Viking Games",
   },
+  {
+    address: "0x89827f7bb951fd8a56f8ef13c5bfee38522f2e1f",
+    symbol: "PLA",
+    name: "Plair",
+  },
 ];

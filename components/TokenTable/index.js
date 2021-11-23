@@ -176,11 +176,11 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
                     setSortDirection(sortedColumn !== SORT_FIELD.NAME ? true : !sortDirection)
                   }}
                 >
-                  {ifBelow680 ? 'Symbol' : 'Name'} {sortedColumn === SORT_FIELD.NAME ? (!sortDirection ? '↑' : '↓') : ''}
+                  {'Pair'} {sortedColumn === SORT_FIELD.NAME ? (!sortDirection ? '↑' : '↓') : ''}
                 </ClickableText>
               </Flex>
             </th>
-            {!ifBelow640 && (
+            {/* {!ifBelow640 && (
               <th>
                 <ClickableText
                   area="symbol"
@@ -192,7 +192,7 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
                   Symbol {sortedColumn === SORT_FIELD.SYMBOL ? (!sortDirection ? '↑' : '↓') : ''}
                 </ClickableText>
               </th>
-            )}
+            )} */}
             <th>
               <ClickableText
                 area="liq"
@@ -252,25 +252,26 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
                     {!ifBelow640 && (
                       <>
                         <div style={{ marginRight: '1rem', width: '10px' }}>{index + 1}</div>
-                        <TokenLogo address={item.address} />
+                        {item.token0 && <TokenLogo address={item.token0.address} />}
+                        {item.token1 && <TokenLogo address={item.token1.address} />}
                       </>
                     )}
                     <FormattedName
                       margin='15px'
-                      text={ifBelow680 ? item.symbol : item.name}
+                      text={`${item.token0? item.token0.symbol : '?'}/${item.token1? item.token1.symbol : '?'}`}
                       maxCharacters={ifBelow600 ? 8 : 16}
                       adjustSize={true}
                       link={true}
                     />
                   </DataText>
                 </td>
-                {!ifBelow640 && (
+                {/* {!ifBelow640 && (
                   <td data-label="Symbol:">
                     <DataText area="symbol" color="text" fontWeight="500" justifyContent="flex-end">
                       <FormattedName text={item.symbol} maxCharacters={5} />
                     </DataText>
                   </td>
-                )}
+                )} */}
                 <td data-label="Liquidity:">
                   <DataText area="liq" justifyContent="flex-end">{formatCurrency(item.tvlInUsd)}</DataText>
                 </td>

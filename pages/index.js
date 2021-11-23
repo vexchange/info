@@ -124,8 +124,8 @@ export default function Home() {
           365) / // Annualized
         item.tvlInUsd;
 
-      item.token0 = allTokens.find((e) => e.address === item.pair[0]);
-      item.token1 = allTokens.find((e) => e.address === item.pair[1]);
+      item.token0 = allTokens.find((e) => e.address.toLowerCase() === item.pair[0].toLowerCase());
+      item.token1 = allTokens.find((e) => e.address.toLowerCase() === item.pair[1].toLowerCase());
 
       return item;
     });
@@ -207,7 +207,7 @@ export default function Home() {
               </Box>
             </Flex>
 
-            <SpecialText mb={3}>Top Tokens</SpecialText>
+            <SpecialText mb={3}>Top Pairs</SpecialText>
             <TokenTable tokens={tokens} vetPrice={vetPrice} />
           </>
         )}

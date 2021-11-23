@@ -30,30 +30,25 @@ const handler = async (req, res) => {
   let volumeInVet = 0;
   let reserves = 0;
   let price = { base2quote: 1, quote2base: 1 };
-  let token;
 
   //pools without VET are not considered
   if (vetPosition > 0) {
     volumeInVet = await getVolume(connex, poolContract, vetPosition);
     reserves = await getReserves(connex, pair, vetPosition);
     const nonVetAddress = pair[1 - vetPosition];
-    token = await Fetcher.fetchTokenData(1, nonVetAddress, connex);
+    const token = await Fetcher.fetchTokenData(1, nonVetAddress, connex);
     price = await getPrice(
       connex,
       nonVetAddress,
       "0xD8CCDD85abDbF68DFEc95f06c973e87B1b5A9997",
       token.decimals
     );
-  } else {
-    const nonVetAddress = pair[0];
-    token = await Fetcher.fetchTokenData(1, nonVetAddress, connex);
   }
 
   res.status(200).json({
     price,
     reserves,
     volumeInVet,
-    token,
     pair,
   });
 };
