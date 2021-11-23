@@ -23,14 +23,24 @@ const LargeText = styled.p`
   margin: 0;
 `;
 
+const SpecialText = styled(Text)`
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
+`
+
 const Label = styled.span`
-  color: rgb(108, 114, 132);
+  display: inline-block;
+  background-color: #f5a78814;
+  color: #f5a788;
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
   box-sizing: border-box;
-  margin: 0px;
+  margin-bottom: 20px;
   min-width: 0px;
-  font-weight: 500;
-  font-size: 16px;
-`;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 8px;
+`
 
 const CoinGeckoClient = new CoinGecko();
 
@@ -159,44 +169,48 @@ export default function Home() {
       <HeaderWrapper>
         <Header />
       </HeaderWrapper>
-      <Text mb={3}>Vexchange Overview</Text>
-      {tokens.length === 0 ? (
-        <Box
-          sx={{
-            position: "fixed",
-            top: "50%",
-            left: "50%",
-            marginTop: -91.5,
-            marginLeft: -100,
-            animationName: bounce,
-            animationDuration: "1s",
-          }}
-        >
-          <Image alt="loading" height="183" src="/logo.png" width="200" />
-        </Box>
-      ) : (
-        <>
-          <Flex mx={-3} mb={4} flexDirection={["column", "row"]}>
-            <Box flex="1" px={3}>
-              <Card>
-                <Label>TVL</Label>
-                <LargeText>{formatCurrency(tvl)}</LargeText>
-              </Card>
-            </Box>
-            <Box flex="1" px={3} mt={[3, 0]}>
-              <Card>
-                <Label>Volume 24H</Label>
-                <LargeText>
-                  {formatCurrency((vol * vetPrice).toFixed(2))}
-                </LargeText>
-              </Card>
-            </Box>
-          </Flex>
+      { tokens.length === 0 
+        ? (
+          <Box
+            sx={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              marginTop: -91.5,
+              marginLeft: -100,
+              animationName: bounce,
+              animationDuration: '1s',
+            }}>
+            <Image
+              alt="loading" 
+              height="183"
+              src="/logo.png"
+              width="200"
+            />
+          </Box>
 
-          <Text mb={3}>Top Tokens</Text>
-          <TokenTable tokens={tokens} vetPrice={vetPrice} />
-        </>
-      )}
+        ) : (
+          <>
+            <SpecialText mb={3}>Vexchange Overview</SpecialText>
+            <Flex mx={-3} mb={4} flexDirection={['column', 'row']}>
+              <Box flex='1' px={3}>
+                <Card>
+                  <Label>Total Value Locked</Label>
+                  <LargeText>{ formatCurrency( tvl ) }</LargeText>
+                </Card>
+              </Box>
+              <Box flex='1' px={3} mt={[3, 0]}>
+                <Card>
+                  <Label>Volume 24H</Label>
+                  <LargeText>{ formatCurrency((vol * vetPrice).toFixed(2)) }</LargeText>
+                </Card>
+              </Box>
+            </Flex>
+
+            <SpecialText mb={3}>Top Tokens</SpecialText>
+            <TokenTable tokens={tokens} vetPrice={vetPrice} />
+          </>
+        )}
     </PageWrapper>
   );
 }

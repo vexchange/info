@@ -1,0 +1,6 @@
+@import '/fontawesome/css/all.min.css';
+
+@font-face {
+  font-family: "VCR";
+  src: local("VCR"), url(/fonts/VCR_OSD_MONO.ttf) format("truetype");
+}

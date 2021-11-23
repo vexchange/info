@@ -6,21 +6,28 @@ import styled from '@emotion/styled'
 import { RowFixed } from '../Row'
 
 const HeaderFrame = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 120px;
+  display: flex;
   align-items: center;
   justify-content: space-between;
   align-items: center;
   flex-direction: row;
   width: 100%;
   top: 0;
-  position: relative;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
   padding: 1rem;
   z-index: 2;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  height: 72px;
+  border-bottom: 1px solid #1C1C22;
 
-  background-color: #191B1F;
+  backdrop-filter: blur(40px);
+  /**
+   * Firefox desktop come with default flag to have backdrop-filter disabled
+   * Firefox Android also currently has bug where backdrop-filter is not being applied
+   * More info: https://bugzilla.mozilla.org/show_bug.cgi?id=1178765
+   **/
+  @-moz-document url-prefix() {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
 
   @media (max-width: 1080px) {
     grid-template-columns: 1fr;
