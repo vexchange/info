@@ -9,7 +9,9 @@ export const getETHPosition = (pair) => {
     return 0;
   } else if (pair[1] === wvet.address) {
     return 1;
-  } else return -1;
+  } else {
+    return -1;
+  }
 };
 
 /**
