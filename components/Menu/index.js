@@ -7,16 +7,16 @@ import { useOnClickOutside } from '../../hooks/index.js';
 const StyledMenuButton = styled.button`
   font-family: VCR, sans-serif;
   text-transform: uppercase;
+  font-size: 14px;
   width: 100%;
-  height: 100%;
+  height: fit-content;
   border: none;
   background-color: transparent;
   margin: 0;
   padding: 0;
-  height: 35px;
   background-color: #f5a78814;
-
-  padding: 0.15rem 0.5rem;
+  line-height: 20px;
+  padding: 12px 16px;
   border-radius: 8px;
   color: #f5a788;
 
@@ -33,7 +33,6 @@ const StyledMenuButton = styled.button`
 `
 
 const StyledMenu = styled.div`
-  margin-left: 0.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -52,7 +51,7 @@ const MenuFlyout = styled.span`
   flex-direction: column;
   font-size: 1rem;
   position: absolute;
-  top: 40px;
+  top: 50px;
   right: 0px;
   z-index: 100;
 `
@@ -102,7 +101,7 @@ export default function Menu() {
   return (
     <StyledMenu ref={ref}>
 			<StyledMenuButton onClick={() => setIsOpen(true)}>
-        Important Links
+        Things
       </StyledMenuButton>
 
 			{isOpen &&

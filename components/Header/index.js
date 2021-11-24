@@ -13,8 +13,8 @@ const HeaderFrame = styled.div`
   flex-direction: row;
   width: 100%;
   top: 0;
-  position: sticky;
-  padding: 1rem;
+  padding-left: 40px;
+  padding-right: 40px;
   z-index: 2;
   height: 72px;
   border-bottom: 1px solid #1C1C22;
@@ -76,9 +76,7 @@ export const StyledMenuButton = styled.button`
   background-color: transparent;
   margin: 0;
   padding: 0;
-  height: 35px;
-  margin-left: 8px;
-  padding: 0.15rem 0.5rem;
+  padding: 12px 16px;
   border-radius: 0.5rem;
 
   :hover,
@@ -99,8 +97,8 @@ export default function Header() {
         <Title href="/">
           <div>
             <Image
-							width="24px"
-							height="24px"
+							width="40px"
+							height="37"
 							src="/logo.svg"
 							alt="logo" 
 						/>
