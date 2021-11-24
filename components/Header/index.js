@@ -61,8 +61,8 @@ const Title = styled(Link)`
   display: flex;
   align-items: center;
   pointer-events: auto;
-  justify-self: flex-start;
   margin-right: 12px;
+
   :hover {
     cursor: pointer;
   }
@@ -95,14 +95,12 @@ export default function Header() {
     <HeaderFrame>
       <HeaderRow>
         <Title href="/">
-          <div>
-            <Image
-							width="40px"
-							height="37"
-							src="/logo.svg"
-							alt="logo" 
-						/>
-          </div>
+          <Image
+            width="40px"
+            height="37"
+            src="/logo.svg"
+            alt="logo" 
+          />
         </Title>
       </HeaderRow>
 			<HeaderControls>
