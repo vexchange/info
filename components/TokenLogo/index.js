@@ -50,7 +50,7 @@ export default function TokenLogo({ address, header = false, size = '24px', ...r
     return (
       <StyledVeChainLogo size={size} {...rest}>
         <Image
-          src="/public/logo.png"
+          src="/vet.png"
           style={{
             boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.075)',
             borderRadius: '24px',
