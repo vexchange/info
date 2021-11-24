@@ -4,7 +4,11 @@ import styled from '@emotion/styled'
 import { useMedia } from 'react-use'
 
 import Card from '../Card'
-import TokenLogo from '../TokenLogo'
+
+// import TokenLogo from '../TokenLogo'
+
+import DoubleTokenLogo from '../DoubleLogo'
+
 import FormattedName from '../FormattedName'
 import { formatCurrency, formattedPercent } from '../../utils'
 
@@ -180,19 +184,6 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
                 </ClickableText>
               </Flex>
             </th>
-            {/* {!ifBelow640 && (
-              <th>
-                <ClickableText
-                  area="symbol"
-                  onClick={() => {
-                    setSortedColumn(SORT_FIELD.SYMBOL)
-                    setSortDirection(sortedColumn !== SORT_FIELD.SYMBOL ? true : !sortDirection)
-                  }}
-                >
-                  Symbol {sortedColumn === SORT_FIELD.SYMBOL ? (!sortDirection ? '↑' : '↓') : ''}
-                </ClickableText>
-              </th>
-            )} */}
             <th>
               <ClickableText
                 area="liq"
@@ -252,8 +243,14 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
                     {!ifBelow640 && (
                       <>
                         <div style={{ marginRight: '1rem', width: '10px' }}>{index + 1}</div>
-                        {item.token0 && <TokenLogo address={item.token0.address} />}
-                        {item.token1 && <TokenLogo address={item.token1.address} />}
+                        {item?.token0 && item?.token1 && (
+                          <DoubleTokenLogo
+                            a0={item?.token0?.address || ''}
+                            a1={item?.token1?.address || ''}
+                            size={26}
+                            margin={true} 
+                          />
+                        )}
                       </>
                     )}
                     <FormattedName
@@ -265,13 +262,6 @@ const TokenTable = ({ tokens, vetPrice, itemMax = 10, useTracked = false }) => {
                     />
                   </DataText>
                 </td>
-                {/* {!ifBelow640 && (
-                  <td data-label="Symbol:">
-                    <DataText area="symbol" color="text" fontWeight="500" justifyContent="flex-end">
-                      <FormattedName text={item.symbol} maxCharacters={5} />
-                    </DataText>
-                  </td>
-                )} */}
                 <td data-label="Liquidity:">
                   <DataText area="liq" justifyContent="flex-end">{formatCurrency(item.tvlInUsd)}</DataText>
                 </td>
