@@ -1,6 +1,8 @@
 import { globalStyles } from '../shared/styles'
 import styled from '@emotion/styled'
 
+import '../styles/fonts.css'
+
 const AppWrapper = styled.div`
   display: flex;
   flex-flow: column;

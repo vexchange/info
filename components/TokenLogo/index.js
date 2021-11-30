@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { utils } from 'ethers'
+import { WVET } from 'vexchange-sdk'
 import styled from '@emotion/styled'
 
 const BAD_IMAGES = {}
@@ -13,9 +13,10 @@ const Inline = styled.div`
 const Image = styled.img`
   width: ${({ size }) => size};
   height: ${({ size }) => size};
-  background-color: white;
   border-radius: 50%;
-  box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.075);
+  background-color: #191B1F;
+  border: 1px solid #f5a788;
+  padding: 5px;
 `
 
 const StyledVeChainLogo = styled.div`
@@ -29,7 +30,7 @@ const StyledVeChainLogo = styled.div`
   }
 `
 
-export default function TokenLogo({ address, header = false, size = '24px', ...rest }) {
+export default function TokenLogo({ address, header = false, size = '26px', ...rest }) {
   const [error, setError] = useState(false)
 
   useEffect(() => {
@@ -50,10 +51,10 @@ export default function TokenLogo({ address, header = false, size = '24px', ...r
     return (
       <StyledVeChainLogo size={size} {...rest}>
         <Image
-          src="/public/logo.png"
+          src="/vet.png"
           style={{
             boxShadow: '0px 6px 10px rgba(0, 0, 0, 0.075)',
-            borderRadius: '24px',
+            borderRadius: '50%',
           }}
           alt=""
         />

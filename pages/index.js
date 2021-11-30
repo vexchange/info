@@ -1,32 +1,45 @@
-import { useEffect, useState } from 'react'
-import Big from 'big.js'
-import Head from 'next/head'
-import axios from 'axios'
-import CoinGecko from 'coingecko-api'
-import styled from '@emotion/styled'
-import Image from 'next/image'
-import { Flex, Box, Text } from 'rebass'
-import { keyframes } from '@emotion/react'
+import { useEffect, useState } from "react";
+import Big from "big.js";
+import Head from "next/head";
+import axios from "axios";
+import CoinGecko from "coingecko-api";
+import styled from "@emotion/styled";
+import Image from "next/image";
+import { Flex, Box, Text } from "rebass";
+import { keyframes } from "@emotion/react";
 
-import { formatCurrency } from '../utils'
-import { allTokens } from '../utils/constants/tokens'
-import { PageWrapper } from '../shared/styles'
-import Header from '../components/Header'
-import TokenTable from '../components/TokenTable'
-import Card from '../components/Card'
+import { formatCurrency } from "../utils";
+import { allTokens } from "../utils/constants/tokens";
+import { PageWrapper } from "../shared/styles";
+import Header from "../components/Header";
+import TokenTable from "../components/TokenTable";
+import Card from "../components/Card";
+import { getPairs } from "../utils/api/pairs";
+import Web3 from "web3";
+import { thorify } from "thorify";
 
 const LargeText = styled.p`
   font-size: 32px;
   margin: 0;
+`;
+
+const SpecialText = styled(Text)`
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
 `
 
 const Label = styled.span`
-  color: rgb(108, 114, 132);
+  display: inline-block;
+  background-color: #f5a78814;
+  color: #f5a788;
+  font-family: VCR, sans-serif;
+  text-transform: uppercase;
   box-sizing: border-box;
-  margin: 0px;
+  margin-bottom: 20px;
   min-width: 0px;
-  font-weight: 500;
-  font-size: 16px;
+  font-size: 12px;
+  padding: 8px;
+  border-radius: 8px;
 `
 
 const CoinGeckoClient = new CoinGecko();
@@ -39,7 +52,7 @@ const bounce = keyframes`
   to {
     transform: scale(1);
   }
-`
+`;
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -50,90 +63,110 @@ const HeaderWrapper = styled.div`
   position: fixed;
   justify-content: space-between;
   z-index: 2;
-`
+`;
 
 const Hide1080 = styled.div`
   @media (max-width: 1080px) {
     display: none;
   }
-`
+`;
+
+const web3 = thorify(new Web3(), "https://mainnet.veblocks.net");
 
 export default function Home() {
-  const [vetPrice, setVetPrice] = useState(0)
-  const [tokens, setTokens] = useState([])
-  const [tvl, setTVL] = useState(0)
-  const [vol, setVol] = useState(0)
+  const [vetPrice, setVetPrice] = useState(0);
+  const [tokens, setTokens] = useState([]);
+  const [pairs, setPairs] = useState([]);
+  const [tvl, setTVL] = useState(0);
+  const [vol, setVol] = useState(0);
 
-	useEffect(() => {
-		const getPrice = async () => {
-			const { data } = await CoinGeckoClient.simple.price(
-				{
-					ids: ['vechain'],
-					vs_currencies: ['usd'],
-			});
+  useEffect(() => {
+    const getVexchangePairs = async () => {
+      const _pairs = await getPairs(web3);
+      setPairs(_pairs);
+    };
+    getVexchangePairs();
+  }, []);
 
-			setVetPrice(data.vechain.usd)
-		}
+  useEffect(() => {
+    const getPrice = async () => {
+      const { data } = await CoinGeckoClient.simple.price({
+        ids: ["vechain"],
+        vs_currencies: ["usd"],
+      });
 
-    getPrice()
-	}, [])
+      setVetPrice(data.vechain.usd);
+    };
 
-	useEffect(() => {
-      if (!vetPrice || tokens.length > 0) return;
-      const promises = allTokens.map(async (item) => {
-        const { data } = await axios.get(`/api/${item.address}`)
-        item = { ...data, ...item }
+    getPrice();
+  }, []);
 
-        // Multiplied by two because it's a 50-50 pool
-        item.tvlInUsd = item.reserves * item.price.base2quote * vetPrice * 2;
+  useEffect(() => {
+    if (!vetPrice || tokens.length > 0 || pairs.length === 0) return;
+    const promises = pairs.map(async (item) => {
+      const { data } = await axios.get(`/api/${item}`);
 
-        // Extra attribute for sorting API
-        // As sorting API cannot handle nested objects
-        item.priceInVet = item.price.base2quote;
+      item = { ...data };
 
-        item.annualizedFeeApr = item.volumeInVet * vetPrice * 0.0075 // Fee generated in a day, currently hardcoded to 0.75%
-                                * 365                                // Annualized
-                                / item.tvlInUsd;
+      // Multiplied by two because it's a 50-50 pool
+      item.tvlInUsd = item.reserves * item.price.base2quote * vetPrice * 2;
 
-        return item
-      })
+      // Extra attribute for sorting API
+      // As sorting API cannot handle nested objects
+      item.priceInVet = item.price.base2quote;
 
-      Promise.all(promises).then(data => {
-        setTokens(data)
-      })
+      item.annualizedFeeApr =
+        (item.volumeInVet *
+          vetPrice *
+          0.0075 * // Fee generated in a day, currently hardcoded to 0.75%
+          365) / // Annualized
+        item.tvlInUsd;
 
-	}, [tokens, vetPrice])
+      item.token0 = allTokens.find((e) => e.address.toLowerCase() === item.pair[0].toLowerCase());
+      item.token1 = allTokens.find((e) => e.address.toLowerCase() === item.pair[1].toLowerCase());
+
+      return item;
+    });
+
+    Promise.all(promises).then((data) => {
+      setTokens(data);
+    });
+  }, [tokens, vetPrice, pairs]);
 
   useEffect(() => {
     const calculate = () => {
-      const stats = tokens.reduce((acc, curr) => {
+      const stats = tokens.reduce(
+        (acc, curr) => {
+          return {
+            tvl: acc.tvl.plus(Big(curr.tvlInUsd)),
+            vol: acc.vol.plus(Big(curr.volumeInVet)),
+          };
+        },
+        { tvl: new Big(0), vol: new Big(0) }
+      );
 
-        return {
-          tvl: acc.tvl.plus(Big(curr.tvlInUsd)),
-          vol: acc.vol.plus(Big(curr.volumeInVet))
-        }
-      }, { tvl: new Big(0), vol: new Big(0)})
-
-      setTVL(stats.tvl.toString())
-      setVol(stats.vol)
-    }
+      setTVL(stats.tvl.toString());
+      setVol(stats.vol);
+    };
 
     if (tokens.length !== 0) {
-      calculate()
+      calculate();
     }
-  }, [tokens])
+  }, [tokens]);
 
   return (
     <PageWrapper>
       <Head>
         <title>Vexchange Info</title>
         <meta name="description" content="Vexchange statistics" />
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"></link>
+        <link
+          rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"
+        ></link>
       </Head>
       <HeaderWrapper>
         <Header />
       </HeaderWrapper>
-      <Text mb={3}>Vexchange Overview</Text>
       { tokens.length === 0 
         ? (
           <Box
@@ -156,11 +189,11 @@ export default function Home() {
 
         ) : (
           <>
-
+            <SpecialText mb={3}>Vexchange Overview</SpecialText>
             <Flex mx={-3} mb={4} flexDirection={['column', 'row']}>
               <Box flex='1' px={3}>
                 <Card>
-                  <Label>TVL</Label>
+                  <Label>Total Value Locked</Label>
                   <LargeText>{ formatCurrency( tvl ) }</LargeText>
                 </Card>
               </Box>
@@ -172,10 +205,10 @@ export default function Home() {
               </Box>
             </Flex>
 
-            <Text mb={3}>Top Tokens</Text>
+            <SpecialText mb={3}>Top Pairs</SpecialText>
             <TokenTable tokens={tokens} vetPrice={vetPrice} />
           </>
         )}
     </PageWrapper>
-  )
+  );
 }
