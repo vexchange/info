@@ -80,8 +80,6 @@ export default function Home() {
   const [tvl, setTVL] = useState(0);
   const [vol, setVol] = useState(0);
 
-  console.log("all pairs ", pairs);
-
   useEffect(() => {
     const getVexchangePairs = async () => {
       const _pairs = await getPairs(web3);
