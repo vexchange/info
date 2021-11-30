@@ -124,10 +124,10 @@ export default function Menu() {
 							Github
 						</MenuItemInner>
           </MenuItem>
-          <MenuItem id="link" href="https://t.me/vexchange">
+          <MenuItem id="link" href="https://discord.gg/krPDhtcumr">
 						<MenuItemInner>
 							<MessageCircle size={14} />
-							Telegram
+							Discord
 						</MenuItemInner>
           </MenuItem>
         </MenuFlyout>
