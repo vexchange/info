@@ -9,14 +9,11 @@ import { Flex, Box, Text } from "rebass";
 import { keyframes } from "@emotion/react";
 
 import { formatCurrency } from "../utils";
-import { allTokens } from "../utils/constants/tokens";
 import { PageWrapper } from "../shared/styles";
 import Header from "../components/Header";
 import TokenTable from "../components/TokenTable";
 import Card from "../components/Card";
-import { getPairs } from "../utils/api/pairs";
-import Web3 from "web3";
-import { thorify } from "thorify";
+import { API_BASE_URL } from "../utils/constants/vexchange";
 
 const LargeText = styled.p`
   font-size: 32px;
@@ -26,7 +23,7 @@ const LargeText = styled.p`
 const SpecialText = styled(Text)`
   font-family: VCR, sans-serif;
   text-transform: uppercase;
-`
+`;
 
 const Label = styled.span`
   display: inline-block;
@@ -40,7 +37,7 @@ const Label = styled.span`
   font-size: 12px;
   padding: 8px;
   border-radius: 8px;
-`
+`;
 
 const CoinGeckoClient = new CoinGecko();
 
@@ -71,75 +68,39 @@ const Hide1080 = styled.div`
   }
 `;
 
-const web3 = thorify(new Web3(), "https://mainnet.veblocks.net");
-
 export default function Home() {
-  const [vetPrice, setVetPrice] = useState(0);
-  const [tokens, setTokens] = useState([]);
   const [pairs, setPairs] = useState([]);
   const [tvl, setTVL] = useState(0);
   const [vol, setVol] = useState(0);
 
   useEffect(() => {
-    const getVexchangePairs = async () => {
-      const _pairs = await getPairs(web3);
+    const getPairs = async () => {
+      const pairsApiResult = await axios(`${API_BASE_URL}pairs`);
+      const _pairs = Object.values(pairsApiResult.data).map((e) => {
+        e.totalReserveUsd =
+          +e.token0Reserve * e.token0.usdPrice +
+          +e.token1Reserve * e.token1.usdPrice;
+        e.totalVolumeUsd = +e.token0Volume * e.token0.usdPrice;
+        //TODO: Check if we can get APR from API
+        e.annualizedFeeApr =
+          (e.totalVolumeUsd *
+            0.0075 * // Fee generated in a day, currently hardcoded to 0.75%
+            365) / // Annualized
+          e.totalReserveUsd;
+        return e;
+      });
       setPairs(_pairs);
     };
-    getVexchangePairs();
+    getPairs();
   }, []);
-
-  useEffect(() => {
-    const getPrice = async () => {
-      const { data } = await CoinGeckoClient.simple.price({
-        ids: ["vechain"],
-        vs_currencies: ["usd"],
-      });
-
-      setVetPrice(data.vechain.usd);
-    };
-
-    getPrice();
-  }, []);
-
-  useEffect(() => {
-    if (!vetPrice || tokens.length > 0 || pairs.length === 0) return;
-    const promises = pairs.map(async (item) => {
-      const { data } = await axios.get(`/api/${item}`);
-
-      item = { ...data };
-
-      // Multiplied by two because it's a 50-50 pool
-      item.tvlInUsd = item.reserves * item.price.base2quote * vetPrice * 2;
-
-      // Extra attribute for sorting API
-      // As sorting API cannot handle nested objects
-      item.priceInVet = item.price.base2quote;
-
-      item.annualizedFeeApr =
-        (item.volumeInVet *
-          vetPrice *
-          0.0075 * // Fee generated in a day, currently hardcoded to 0.75%
-          365) / // Annualized
-        item.tvlInUsd;
-
-      item.token0 = allTokens.find((e) => e.address.toLowerCase() === item.pair[0].toLowerCase());
-      item.token1 = allTokens.find((e) => e.address.toLowerCase() === item.pair[1].toLowerCase());
-
-      return item;
-    });
-
-    Promise.all(promises).then((data) => {
-      setTokens(data);
-    });
-  }, [tokens, vetPrice, pairs]);
 
   useEffect(() => {
     const calculate = () => {
-      const stats = tokens.reduce(
+      const stats = pairs.reduce(
         (acc, curr) => {
           return {
-            tvl: acc.tvl.plus(Big(curr.tvlInUsd)),
-            vol: acc.vol.plus(Big(curr.volumeInVet)),
+            tvl: acc.tvl.plus(Big(curr.totalReserveUsd)),
+            vol: acc.vol.plus(Big(curr.totalVolumeUsd)),
           };
         },
         { tvl: new Big(0), vol: new Big(0) }
@@ -149,10 +110,10 @@ export default function Home() {
       setVol(stats.vol);
     };
 
-    if (tokens.length !== 0) {
+    if (pairs.length !== 0) {
       calculate();
     }
-  }, [tokens]);
+  }, [pairs]);
 
   return (
     <PageWrapper>
@@ -167,48 +128,42 @@ export default function Home() {
       <HeaderWrapper>
         <Header />
       </HeaderWrapper>
-      { tokens.length === 0 
-        ? (
-          <Box
-            sx={{
-              position: 'fixed',
-              top: '50%',
-              left: '50%',
-              marginTop: -91.5,
-              marginLeft: -100,
-              animationName: bounce,
-              animationDuration: '1s',
-            }}>
-            <Image
-              alt="loading" 
-              height="183"
-              src="/logo.png"
-              width="200"
-            />
-          </Box>
+      {pairs.length === 0 ? (
+        <Box
+          sx={{
+            position: "fixed",
+            top: "50%",
+            left: "50%",
+            marginTop: -91.5,
+            marginLeft: -100,
+            animationName: bounce,
+            animationDuration: "1s",
+          }}
+        >
+          <Image alt="loading" height="183" src="/logo.png" width="200" />
+        </Box>
+      ) : (
+        <>
+          <SpecialText mb={3}>Vexchange Overview</SpecialText>
+          <Flex mx={-3} mb={4} flexDirection={["column", "row"]}>
+            <Box flex="1" px={3}>
+              <Card>
+                <Label>Total Value Locked</Label>
+                <LargeText>{formatCurrency(tvl)}</LargeText>
+              </Card>
+            </Box>
+            <Box flex="1" px={3} mt={[3, 0]}>
+              <Card>
+                <Label>Volume 24H</Label>
+                <LargeText>{formatCurrency(vol.toFixed(2))}</LargeText>
+              </Card>
+            </Box>
+          </Flex>
 
-        ) : (
-          <>
-            <SpecialText mb={3}>Vexchange Overview</SpecialText>
-            <Flex mx={-3} mb={4} flexDirection={['column', 'row']}>
-              <Box flex='1' px={3}>
-                <Card>
-                  <Label>Total Value Locked</Label>
-                  <LargeText>{ formatCurrency( tvl ) }</LargeText>
-                </Card>
-              </Box>
-              <Box flex='1' px={3} mt={[3, 0]}>
-                <Card>
-                  <Label>Volume 24H</Label>
-                  <LargeText>{ formatCurrency((vol * vetPrice).toFixed(2)) }</LargeText>
-                </Card>
-              </Box>
-            </Flex>
-
-            <SpecialText mb={3}>Top Pairs</SpecialText>
-            <TokenTable tokens={tokens} vetPrice={vetPrice} />
-          </>
-        )}
+          <SpecialText mb={3}>Top Pairs</SpecialText>
+          <TokenTable pairs={pairs} />
+        </>
+      )}
     </PageWrapper>
   );
 }
