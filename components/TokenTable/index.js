@@ -110,7 +110,7 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
                   );
                 }}
               >
-                Price (24hrs)
+                Price
                 {sortedColumn === SORT_FIELD.PRICE
                   ? !sortDirection
                     ? "↑"

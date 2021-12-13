@@ -92,7 +92,6 @@ export default function Home() {
     const getTokens = async () => {
       const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
       const _tokens = Object.values(tokensApiResult.data);
-      console.log(_tokens);
       setTokens(_tokens);
     }
 
