@@ -11,7 +11,7 @@ export default function DoubleTokenLogo({ a0, a1, size = 26, margin = false }) {
   `
 
   const HigherLogo = styled(TokenLogo)`
-    z-index: 2;
+    z-index: 1;
     border-radius: 50%;
   `
 
