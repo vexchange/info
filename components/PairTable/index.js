@@ -2,10 +2,10 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useMedia } from "react-use";
 import { Flex } from "rebass";
 
-import TokenLogo from "../TokenLogo";
+import DoubleTokenLogo from "../DoubleLogo";
 
 import FormattedName from "../FormattedName";
-import { formatCurrency } from "../../utils";
+import { formatCurrency, formattedPercent } from "../../utils";
 
 import {
   ClickableText,
@@ -15,32 +15,33 @@ import {
 } from './styled'
 
 const SORT_FIELD = {
-  NAME: "name",
-  SYM: "symbol",
-  PRICE: "usdPrice",
+  LIQ: "totalReserveUsd",
+  VOL: "totalVolumeUsd",
+  PRICE: "priceInVet",
+  APR: "annualizedFeeApr",
 };
 
-const TokenTable = ({ tokens, itemMax = 20 }) => {
+const PairTable = ({ pairs, itemMax = 20 }) => {
   const [page, setPage] = useState(1);
 
   // sorting
-  const [sortDirection, setSortDirection] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.NAME);
+  const [sortDirection, setSortDirection] = useState(true);
+  const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.VOL);
 
   const ifBelow640 = useMedia("(max-width: 640px)");
   const ifBelow600 = useMedia("(max-width: 600px)");
 
   useEffect(() => {
     setPage(1);
-  }, [tokens]);
+  }, [pairs]);
 
   const filteredList = useMemo(() => {
     return (
-      tokens &&
-      tokens
+      pairs &&
+      pairs
         .sort((a, b) => {
           if (
-            sortedColumn === SORT_FIELD.SYM ||
+            sortedColumn === SORT_FIELD.SYMBOL ||
             sortedColumn === SORT_FIELD.NAME
           ) {
             return a[sortedColumn] > b[sortedColumn]
@@ -53,7 +54,7 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
         })
         .slice(itemMax * (page - 1), page * itemMax)
     );
-  }, [tokens, itemMax, page, sortDirection, sortedColumn]);
+  }, [pairs, itemMax, page, sortDirection, sortedColumn]);
 
   return (
     <Wrapper>
@@ -73,7 +74,7 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
                     );
                   }}
                 >
-                  Token{" "}
+                  {"Pair"}{" "}
                   {sortedColumn === SORT_FIELD.NAME
                     ? !sortDirection
                       ? "↑"
@@ -84,16 +85,16 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
             </th>
             <th>
               <ClickableText
-                area="sym"
+                area="liq"
                 onClick={() => {
-                  setSortedColumn(SORT_FIELD.SYM);
+                  setSortedColumn(SORT_FIELD.LIQ);
                   setSortDirection(
-                    sortedColumn !== SORT_FIELD.SYM ? true : !sortDirection
+                    sortedColumn !== SORT_FIELD.LIQ ? true : !sortDirection
                   );
                 }}
               >
-                Symbol{" "}
-                {sortedColumn === SORT_FIELD.SYM
+                Liquidity{" "}
+                {sortedColumn === SORT_FIELD.LIQ
                   ? !sortDirection
                     ? "↑"
                     : "↓"
@@ -104,14 +105,50 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
               <ClickableText
                 area="vol"
                 onClick={() => {
+                  setSortedColumn(SORT_FIELD.VOL);
+                  setSortDirection(
+                    sortedColumn !== SORT_FIELD.VOL ? true : !sortDirection
+                  );
+                }}
+              >
+                Volume (24hrs)
+                {sortedColumn === SORT_FIELD.VOL
+                  ? !sortDirection
+                    ? "↑"
+                    : "↓"
+                  : ""}
+              </ClickableText>
+            </th>
+            {/* <th>
+              <ClickableText
+                area="price"
+                onClick={(e) => {
                   setSortedColumn(SORT_FIELD.PRICE);
                   setSortDirection(
                     sortedColumn !== SORT_FIELD.PRICE ? true : !sortDirection
                   );
                 }}
               >
-                Price (24hrs)
+                Price{" "}
                 {sortedColumn === SORT_FIELD.PRICE
+                  ? !sortDirection
+                    ? "↑"
+                    : "↓"
+                  : ""}
+              </ClickableText>
+            </th> */}
+            <th>
+              <ClickableText
+                area="apr"
+                onClick={() => {
+                  setSortedColumn(SORT_FIELD.APR);
+                  setSortDirection(
+                    sortedColumn !== SORT_FIELD.APR ? true : !sortDirection
+                  );
+                }}
+              >
+                APR
+                {sortedColumn === SORT_FIELD.APR
                   ? !sortDirection
                     ? "↑"
                     : "↓"
@@ -127,35 +164,55 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
                 <tr key={index}>
                   <td data-label="Name:">
                     <DataText area="name" fontWeight="500">
-                      {!ifBelow640 && item?.contractAddress ? (
-                        <TokenLogo
-                          address={item.contractAddress}
-                          size={'26px'}
-                          margin={true}
-                        />
-                      ) : null}
+                      {!ifBelow640 && (
+                        <>
+                          <div style={{ marginRight: "1rem", width: "10px" }}>
+                            {index + 1}
+                          </div>
+                          {item?.token0 && item?.token1 && (
+                            <DoubleTokenLogo
+                              a0={item?.token0?.contractAddress || ""}
+                              a1={item?.token1?.contractAddress || ""}
+                              size={26}
+                              margin={true}
+                            />
+                          )}
+                        </>
+                      )}
                       <FormattedName
                         margin="15px"
-                        text={item.name}
+                        text={`${item.token0 ? item.token0.symbol : "?"}/${
+                          item.token1 ? item.token1.symbol : "?"
+                        }`}
                         maxCharacters={ifBelow600 ? 8 : 16}
                         adjustSize={true}
                         link={true}
                       />
                     </DataText>
                   </td>
-                  <td data-label="Symbol:">
-                    <DataText area="sym" justifyContent="flex-end">
-                      {item.symbol}
+                  <td data-label="Liquidity:">
+                    <DataText area="liq" justifyContent="flex-end">
+                      {formatCurrency(item.totalReserveUsd)}
                     </DataText>
                   </td>
-                  <td data-label="Price:">
+                  <td data-label="Volume:">
+                    <DataText area="vol" justifyContent="flex-end">
+                      {formatCurrency(item.totalVolumeUsd)}
+                    </DataText>
+                  </td>
+                  {/* <td data-label="Price:">
                     <DataText
                       area="price"
                       color="text"
                       fontWeight="500"
                       justifyContent="flex-end"
                     >
-                      {formatCurrency(item.usdPrice)}
+                      {formatCurrency(item.price.base2quote * vetPrice)}
+                    </DataText>
+                  </td> */}
+                  <td data-label="APR:">
+                    <DataText area="apr" justifyContent="flex-end">
+                      {formattedPercent(item.annualizedFeeApr)}
                     </DataText>
                   </td>
                 </tr>
@@ -167,4 +224,4 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
   );
 };
 
-export default TokenTable;
+export default PairTable;
