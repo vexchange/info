@@ -119,24 +119,6 @@ const PairTable = ({ pairs, itemMax = 20 }) => {
                   : ""}
               </ClickableText>
             </th>
-            {/* <th>
-              <ClickableText
-                area="price"
-                onClick={(e) => {
-                  setSortedColumn(SORT_FIELD.PRICE);
-                  setSortDirection(
-                    sortedColumn !== SORT_FIELD.PRICE ? true : !sortDirection
-                  );
-                }}
-              >
-                Price{" "}
-                {sortedColumn === SORT_FIELD.PRICE
-                  ? !sortDirection
-                    ? "↑"
-                    : "↓"
-                  : ""}
-              </ClickableText>
-            </th> */}
             <th>
               <ClickableText
                 area="apr"
@@ -200,16 +182,6 @@ const PairTable = ({ pairs, itemMax = 20 }) => {
                       {formatCurrency(item.totalVolumeUsd)}
                     </DataText>
                   </td>
-                  {/* <td data-label="Price:">
-                    <DataText
-                      area="price"
-                      color="text"
-                      fontWeight="500"
-                      justifyContent="flex-end"
-                    >
-                      {formatCurrency(item.price.base2quote * vetPrice)}
-                    </DataText>
-                  </td> */}
                   <td data-label="APR:">
                     <DataText area="apr" justifyContent="flex-end">
                       {formattedPercent(item.annualizedFeeApr)}
