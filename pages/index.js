@@ -11,6 +11,7 @@ import { keyframes } from "@emotion/react";
 import { formatCurrency } from "../utils";
 import { PageWrapper } from "../shared/styles";
 import Header from "../components/Header";
+import PairTable from "../components/PairTable";
 import TokenTable from "../components/TokenTable";
 import Card from "../components/Card";
 import { API_BASE_URL } from "../utils/constants/vexchange";
@@ -39,8 +40,6 @@ const Label = styled.span`
   border-radius: 8px;
 `;
 
-const CoinGeckoClient = new CoinGecko();
-
 const bounce = keyframes`
   from {
     transform: scale(0.5);
@@ -62,14 +61,9 @@ const HeaderWrapper = styled.div`
   z-index: 2;
 `;
 
-const Hide1080 = styled.div`
-  @media (max-width: 1080px) {
-    display: none;
-  }
-`;
-
 export default function Home() {
   const [pairs, setPairs] = useState([]);
+  const [tokens, setTokens] = useState([]);
   const [tvl, setTVL] = useState(0);
   const [vol, setVol] = useState(0);
 
@@ -92,6 +86,16 @@ export default function Home() {
       setPairs(_pairs);
     };
     getPairs();
+  }, []);
+
+  useEffect(() => {
+    const getTokens = async () => {
+      const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
+      const _tokens = Object.values(tokensApiResult.data);
+      setTokens(_tokens);
+    }
+
+    getTokens();
   }, []);
 
   useEffect(() => {
@@ -161,7 +165,10 @@ export default function Home() {
           </Flex>
 
           <SpecialText mb={3}>Top Pairs</SpecialText>
-          <TokenTable pairs={pairs} />
+          <PairTable pairs={pairs} />
+
+          <SpecialText mb={3}>Tokens</SpecialText>
+          <TokenTable tokens={tokens} />
         </>
       )}
     </PageWrapper>
