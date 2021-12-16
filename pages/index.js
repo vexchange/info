@@ -103,8 +103,8 @@ export default function Home() {
       const stats = pairs.reduce(
         (acc, curr) => {
           return {
-            tvl: acc.tvl.plus(Big(curr.totalReserveUsd)),
-            vol: acc.vol.plus(Big(curr.totalVolumeUsd)),
+            tvl: acc.tvl.plus(Big(curr?.totalReserveUsd || 0)),
+            vol: acc.vol.plus(Big(curr.totalVolumeUsd || 0)),
           };
         },
         { tvl: new Big(0), vol: new Big(0) }
