@@ -164,11 +164,11 @@ export default function Home() {
             </Box>
           </Flex>
 
-          <SpecialText mb={3}>Top Pairs</SpecialText>
-          <PairTable pairs={pairs} />
-
           <SpecialText mb={3}>Tokens</SpecialText>
           <TokenTable tokens={tokens} />
+
+          <SpecialText mb={3}>Top Pairs</SpecialText>
+          <PairTable pairs={pairs} />
         </>
       )}
     </PageWrapper>

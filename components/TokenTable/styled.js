@@ -4,7 +4,7 @@ import { Flex, Text } from "rebass";
 import Card from "../Card";
 
 export const Wrapper = styled(Card)`
-  margin-bottom: 200px;
+  margin-bottom: 50px;
 
   @media screen and (max-width: 640px) {
     background: none;
