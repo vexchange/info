@@ -163,6 +163,7 @@ export default function Home() {
               </Card>
             </Box>
           </Flex>
+
           <SpecialText mb={3}>Tokens</SpecialText>
           <TokenTable tokens={tokens} />
 
