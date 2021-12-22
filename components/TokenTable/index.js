@@ -5,7 +5,7 @@ import { Flex } from "rebass";
 import TokenLogo from "../TokenLogo";
 
 import FormattedName from "../FormattedName";
-import { formatCurrency } from "../../utils";
+import { formatCurrency, formatPrice } from "../../utils";
 
 import {
   ClickableText,
@@ -18,14 +18,15 @@ const SORT_FIELD = {
   NAME: "name",
   SYM: "symbol",
   PRICE: "usdPrice",
+  TVL: "tvl",
 };
 
 const TokenTable = ({ tokens, itemMax = 20 }) => {
   const [page, setPage] = useState(1);
 
   // sorting
-  const [sortDirection, setSortDirection] = useState(false);
-  const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.NAME);
+  const [sortDirection, setSortDirection] = useState(true);
+  const [sortedColumn, setSortedColumn] = useState(SORT_FIELD.TVL);
 
   const ifBelow640 = useMedia("(max-width: 640px)");
   const ifBelow600 = useMedia("(max-width: 600px)");
@@ -118,6 +119,24 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
                   : ""}
               </ClickableText>
             </th>
+            <th>
+              <ClickableText
+                area="tvl"
+                onClick={() => {
+                  setSortedColumn(SORT_FIELD.TVL);
+                  setSortDirection(
+                    sortedColumn !== SORT_FIELD.TVL ? true : !sortDirection
+                  );
+                }}
+              >
+                TVL{" "}
+                {sortedColumn === SORT_FIELD.TVL
+                  ? !sortDirection
+                    ? "↑"
+                    : "↓"
+                  : ""}
+              </ClickableText>
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -155,7 +174,17 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
                       fontWeight="500"
                       justifyContent="flex-end"
                     >
-                      {formatCurrency(item.usdPrice)}
+                      {formatPrice(item.usdPrice)}
+                    </DataText>
+                  </td>
+                  <td data-label="TVL:">
+                    <DataText
+                      area="TVL"
+                      color="text"
+                      fontWeight="500"
+                      justifyContent="flex-end"
+                    >
+                      {formatCurrency(item.tvl)}
                     </DataText>
                   </td>
                 </tr>

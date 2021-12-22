@@ -84,19 +84,39 @@ export default function Home() {
         return e;
       });
       setPairs(_pairs);
+
+      //transform to tokens
+      const tokensMap = _pairs.reduce((acc, curr) => {
+        const token0 = curr.token0.contractAddress;
+        const token1 = curr.token1.contractAddress;
+        const reserve0Usd = +curr.token0Reserve * curr.token0.usdPrice;
+        const reserve1Usd = +curr.token1Reserve * curr.token1.usdPrice;
+        return {
+          ...acc,
+          [token0]: {
+            ...curr.token0,
+            tvl: acc[token0] ? acc[token0].tvl + reserve0Usd : reserve0Usd,
+          },
+          [token1]: {
+            ...curr.token1,
+            tvl: acc[token1] ? acc[token1].tvl + reserve1Usd : reserve1Usd,
+          },
+        };
+      }, {});
+      setTokens(Object.values(tokensMap).filter(e => e.tvl));
     };
     getPairs();
   }, []);
 
-  useEffect(() => {
-    const getTokens = async () => {
-      const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
-      const _tokens = Object.values(tokensApiResult.data);
-      setTokens(_tokens);
-    }
+  // useEffect(() => {
+  //   const getTokens = async () => {
+  //     const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
+  //     const _tokens = Object.values(tokensApiResult.data);
+  //     setTokens(_tokens);
+  //   };
 
-    getTokens();
-  }, []);
+  //   getTokens();
+  // }, []);
 
   useEffect(() => {
     const calculate = () => {
