@@ -19,6 +19,7 @@ const SORT_FIELD = {
   SYM: "symbol",
   PRICE: "usdPrice",
   TVL: "tvl",
+  VOL: "volume",
 };
 
 const TokenTable = ({ tokens, itemMax = 20 }) => {
@@ -121,6 +122,24 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
             </th>
             <th>
               <ClickableText
+                area="volume"
+                onClick={() => {
+                  setSortedColumn(SORT_FIELD.VOL);
+                  setSortDirection(
+                    sortedColumn !== SORT_FIELD.VOL ? true : !sortDirection
+                  );
+                }}
+              >
+                Volume (24hrs)
+                {sortedColumn === SORT_FIELD.VOL
+                  ? !sortDirection
+                    ? "↑"
+                    : "↓"
+                  : ""}
+              </ClickableText>
+            </th>
+            <th>
+              <ClickableText
                 area="tvl"
                 onClick={() => {
                   setSortedColumn(SORT_FIELD.TVL);
@@ -177,9 +196,19 @@ const TokenTable = ({ tokens, itemMax = 20 }) => {
                       {formatPrice(item.usdPrice)}
                     </DataText>
                   </td>
+                  <td data-label="VOL:">
+                    <DataText
+                      area="volume"
+                      color="text"
+                      fontWeight="500"
+                      justifyContent="flex-end"
+                    >
+                      {formatCurrency(item.volume)}
+                    </DataText>
+                  </td>
                   <td data-label="TVL:">
                     <DataText
-                      area="TVL"
+                      area="tvl"
                       color="text"
                       fontWeight="500"
                       justifyContent="flex-end"
