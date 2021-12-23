@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Big from "big.js";
 import Head from "next/head";
 import axios from "axios";
-import CoinGecko from "coingecko-api";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import { Flex, Box, Text } from "rebass";
@@ -14,7 +13,7 @@ import Header from "../components/Header";
 import PairTable from "../components/PairTable";
 import TokenTable from "../components/TokenTable";
 import Card from "../components/Card";
-import { API_BASE_URL } from "../utils/constants/vexchange";
+import { API_BASE_URL } from "@utils/constants/vexchange";
 
 const LargeText = styled.p`
   font-size: 32px;
@@ -127,7 +126,7 @@ export default function Home() {
         <link
           rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"
-        ></link>
+        />
       </Head>
       <HeaderWrapper>
         <Header />
