@@ -6,7 +6,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import { Flex, Box, Text } from "rebass";
 import { keyframes } from "@emotion/react";
-
+import { whitelist } from "@state/whitelist";
 import { formatCurrency } from "../utils";
 import { PageWrapper } from "../shared/styles";
 import Header from "../components/Header";
@@ -65,8 +65,10 @@ export default function Home() {
   const [tokens, setTokens] = useState([]);
   const [tvl, setTVL] = useState(0);
   const [vol, setVol] = useState(0);
+  const { whiteListedTokens } = whitelist.useContainer();
 
   useEffect(() => {
+    if (!whiteListedTokens) return;
     const getPairs = async () => {
       const pairsApiResult = await axios(`${API_BASE_URL}pairs`);
       const _pairs = Object.values(pairsApiResult.data).map((e) => {
@@ -85,17 +87,20 @@ export default function Home() {
       setPairs(_pairs);
     };
     getPairs();
-  }, []);
+  }, [whiteListedTokens]);
 
   useEffect(() => {
+    if (!whiteListedTokens) return;
     const getTokens = async () => {
       const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
       const _tokens = Object.values(tokensApiResult.data);
-      setTokens(_tokens);
+      const filtered = _tokens.filter(token => token.contractAddress in whiteListedTokens);
+
+      setTokens(filtered);
     }
 
     getTokens();
-  }, []);
+  }, [whiteListedTokens]);
 
   useEffect(() => {
     const calculate = () => {
