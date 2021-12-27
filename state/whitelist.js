@@ -13,14 +13,14 @@ function useWhitelist() {
     useEffect(() => {
         const fetchWhitelist = async () => {
             const result = await axios.get(FOUNDATION_WHITELIST_URL);
-            const whitelist = {};
+            const whitelist = new Map();
             result.data.forEach((token) => {
                 // Converts all addresses into checksummed addresses
                 const tokenContractAddress = getAddress(token.address);
-                whitelist[tokenContractAddress] = token;
+                whitelist.set(tokenContractAddress, token);
             })
             // Need to include the WVET address manually as it is not in the foundation whitelist
-            whitelist[WVET[1].address] = WVET[1];
+            whitelist.set(WVET[1].address, WVET[1]);
             setWhitelistedTokens(whitelist);
         }
 

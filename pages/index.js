@@ -72,7 +72,7 @@ export default function Home() {
     const getPairs = async () => {
       const pairsApiResult = await axios(`${API_BASE_URL}pairs`);
       const filtered = Object.values(pairsApiResult.data).filter(pair =>
-          pair.token0.contractAddress in whiteListedTokens && pair.token1.contractAddress in whiteListedTokens
+          whiteListedTokens.has(pair.token0.contractAddress) && whiteListedTokens.has(pair.token1.contractAddress)
       );
       const _pairs = filtered.map((e) => {
         e.totalReserveUsd =
@@ -97,7 +97,7 @@ export default function Home() {
     const getTokens = async () => {
       const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
       const _tokens = Object.values(tokensApiResult.data);
-      const filtered = _tokens.filter(token => token.contractAddress in whiteListedTokens);
+      const filtered = _tokens.filter(token => whiteListedTokens.has(token.contractAddress));
 
       setTokens(filtered);
     }
