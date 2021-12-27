@@ -93,7 +93,7 @@ export default function Home() {
   }, [whiteListedTokens]);
 
   useEffect(() => {
-    if (!whiteListedTokens) return;
+    if (!whiteListedTokens) { return; }
     const getTokens = async () => {
       const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
       const _tokens = Object.values(tokensApiResult.data);
