@@ -1,3 +1,4 @@
+import { StateProvider } from "@state/index";
 import { globalStyles } from '../shared/styles'
 import styled from '@emotion/styled'
 
@@ -35,7 +36,9 @@ const App = ({ Component, pageProps }) => (
   <>
     <AppWrapper>
       <BodyWrapper>
-        <Component {...pageProps} />
+        <StateProvider>
+            <Component {...pageProps} />
+        </StateProvider>
       </BodyWrapper>
     </AppWrapper>
     { globalStyles }
