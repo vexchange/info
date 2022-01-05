@@ -93,17 +93,18 @@ export default function Home() {
         const reserve1Usd = +curr.token1Reserve * curr.token1.usdPrice;
         const volume0 = +curr.token0Volume * curr.token0.usdPrice;
         const volume1 = +curr.token1Volume * curr.token1.usdPrice;
+        
         return {
           ...acc,
           [token0]: {
             ...curr.token0,
-            tvl: acc[token0] ? acc[token0].tvl + reserve0Usd : reserve0Usd,
-            volume: acc[token0] ? acc[token0].volume + volume0 : volume0,
+            tvl: (acc[token0]?.tvl ?? 0) + reserve0Usd,
+            volume: (acc[token0]?.volume ?? 0) + volume0,
           },
           [token1]: {
             ...curr.token1,
-            tvl: acc[token1] ? acc[token1].tvl + reserve1Usd : reserve1Usd,
-            volume: acc[token1] ? acc[token1].volume + volume1 : volume1,
+            tvl: (acc[token1]?.tvl ?? 0) + reserve1Usd,
+            volume: (acc[token1]?.volume ?? 0) + volume1,
           },
         };
       }, {});
