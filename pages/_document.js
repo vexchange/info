@@ -13,7 +13,7 @@ class MyDocument extends Document {
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
           <link href="https://fonts.googleapis.com/css2?family=Satisfy&display=swap" rel="stylesheet" />
 
-          <script async src="https://www.googletagmanager.com/gtag/js?id=G-YEP0Q1NNQ3"></script>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-YEP0Q1NNQ3" />
           <script
             dangerouslySetInnerHTML={{__html: `
               window.dataLayer = window.dataLayer || [];

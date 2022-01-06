@@ -2,19 +2,18 @@ import { useEffect, useState } from "react";
 import Big from "big.js";
 import Head from "next/head";
 import axios from "axios";
-import CoinGecko from "coingecko-api";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import { Flex, Box, Text } from "rebass";
 import { keyframes } from "@emotion/react";
-
+import { whitelist } from "@state/whitelist";
 import { formatCurrency } from "../utils";
 import { PageWrapper } from "../shared/styles";
 import Header from "../components/Header";
 import PairTable from "../components/PairTable";
 import TokenTable from "../components/TokenTable";
 import Card from "../components/Card";
-import { API_BASE_URL } from "../utils/constants/vexchange";
+import { API_BASE_URL } from "@utils/constants/vexchange";
 
 const LargeText = styled.p`
   font-size: 32px;
@@ -66,11 +65,16 @@ export default function Home() {
   const [tokens, setTokens] = useState([]);
   const [tvl, setTVL] = useState(0);
   const [vol, setVol] = useState(0);
+  const { whiteListedTokens } = whitelist.useContainer();
 
   useEffect(() => {
+    if (!whiteListedTokens) return;
     const getPairs = async () => {
       const pairsApiResult = await axios(`${API_BASE_URL}pairs`);
-      const _pairs = Object.values(pairsApiResult.data).map((e) => {
+      const filtered = Object.values(pairsApiResult.data).filter(pair =>
+          whiteListedTokens.has(pair.token0.contractAddress) && whiteListedTokens.has(pair.token1.contractAddress)
+      );
+      const _pairs = filtered.map((e) => {
         e.totalReserveUsd =
           +e.token0Reserve * e.token0.usdPrice +
           +e.token1Reserve * e.token1.usdPrice;
@@ -108,10 +112,10 @@ export default function Home() {
           },
         };
       }, {});
-      setTokens(Object.values(tokensMap).filter(e => e.tvl));
+      setTokens(Object.values(tokensMap));
     };
     getPairs();
-  }, []);
+  }, [whiteListedTokens]);
 
   useEffect(() => {
     const calculate = () => {
@@ -142,7 +146,7 @@ export default function Home() {
         <link
           rel="icon"
           href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>"
-        ></link>
+        />
       </Head>
       <HeaderWrapper>
         <Header />
