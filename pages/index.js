@@ -113,16 +113,6 @@ export default function Home() {
     getPairs();
   }, []);
 
-  // useEffect(() => {
-  //   const getTokens = async () => {
-  //     const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
-  //     const _tokens = Object.values(tokensApiResult.data);
-  //     setTokens(_tokens);
-  //   };
-
-  //   getTokens();
-  // }, []);
-
   useEffect(() => {
     const calculate = () => {
       const stats = pairs.reduce(
