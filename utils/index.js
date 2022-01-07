@@ -2,7 +2,7 @@ import numeral from 'numeral'
 import { ethers } from 'ethers'
 import { Text } from 'rebass'
 
-export const formatCurrency = (num = 0) => numeral(num).format('$0,0.0000')
+export const formatCurrency = (num = 0) => numeral(num).format('$0,0.00')
 export const formattedPercent = (num) => numeral(num).format('0.0%')
 export const formatPrice = (num = 0) => numeral(num).format('$0.00000')
 

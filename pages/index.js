@@ -88,21 +88,33 @@ export default function Home() {
         return e;
       });
       setPairs(_pairs);
+
+      //transform to tokens
+      const tokensMap = _pairs.reduce((acc, curr) => {
+        const token0 = curr.token0.contractAddress;
+        const token1 = curr.token1.contractAddress;
+        const reserve0Usd = +curr.token0Reserve * curr.token0.usdPrice;
+        const reserve1Usd = +curr.token1Reserve * curr.token1.usdPrice;
+        const volume0 = +curr.token0Volume * curr.token0.usdPrice;
+        const volume1 = +curr.token1Volume * curr.token1.usdPrice;
+        
+        return {
+          ...acc,
+          [token0]: {
+            ...curr.token0,
+            tvl: (acc[token0]?.tvl ?? 0) + reserve0Usd,
+            volume: (acc[token0]?.volume ?? 0) + volume0,
+          },
+          [token1]: {
+            ...curr.token1,
+            tvl: (acc[token1]?.tvl ?? 0) + reserve1Usd,
+            volume: (acc[token1]?.volume ?? 0) + volume1,
+          },
+        };
+      }, {});
+      setTokens(Object.values(tokensMap));
     };
     getPairs();
-  }, [whiteListedTokens]);
-
-  useEffect(() => {
-    if (!whiteListedTokens) { return; }
-    const getTokens = async () => {
-      const tokensApiResult = await axios(`${API_BASE_URL}tokens`);
-      const _tokens = Object.values(tokensApiResult.data);
-      const filtered = _tokens.filter(token => whiteListedTokens.has(token.contractAddress));
-
-      setTokens(filtered);
-    }
-
-    getTokens();
   }, [whiteListedTokens]);
 
   useEffect(() => {
