@@ -80,11 +80,16 @@ export default function Home() {
           +e.token1Reserve * e.token1.usdPrice;
         e.totalVolumeUsd = +e.token0Volume * e.token0.usdPrice;
         //TODO: Check if we can get APR from API
-        e.annualizedFeeApr =
-          (e.totalVolumeUsd *
-            0.0075 * // Fee generated in a day, currently hardcoded to 0.75%
-            365) / // Annualized
-          e.totalReserveUsd;
+        const swapFee = parseFloat(e.swapFee) / 100;
+        const platformFee = parseFloat(e.platformFee) / 100;
+        const lpTakeHome = swapFee * (1 - platformFee);
+        const lpFeesPerYear = (
+            e.totalVolumeUsd
+            * lpTakeHome // Fee generated in a day
+            * 365
+        );
+        e.annualizedFeeApr = lpFeesPerYear / e.totalReserveUsd;
+
         return e;
       });
       setPairs(_pairs);
